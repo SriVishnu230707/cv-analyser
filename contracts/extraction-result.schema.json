@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Phase 3 extraction result",
+  "type": "object", "additionalProperties": false,
+  "required": ["status", "file_type", "text", "sections", "pages", "page_count", "ocr_used", "readability", "warnings"],
+  "properties": {
+    "status": {"const": "extracted"},
+    "file_type": {"enum": ["pdf", "docx"]},
+    "text": {"type": "string", "minLength": 40, "maxLength": 50000},
+    "sections": {"type": "array", "items": {"type": "object", "additionalProperties": false, "required": ["name", "text"], "properties": {"name": {"type": "string"}, "text": {"type": "string"}}}},
+    "pages": {"type": "array", "minItems": 1, "maxItems": 10, "items": {"type": "object", "additionalProperties": false, "required": ["number", "text", "method"], "properties": {"number": {"type": ["integer", "null"], "minimum": 1, "maximum": 10}, "text": {"type": "string"}, "method": {"enum": ["text", "ocr"]}}}},
+    "page_count": {"type": ["integer", "null"], "minimum": 1, "maximum": 10},
+    "ocr_used": {"type": "boolean"},
+    "readability": {"type": "object", "additionalProperties": false, "required": ["status", "issues"], "properties": {"status": {"enum": ["readable", "needs_review"]}, "issues": {"type": "array", "items": {"type": "string"}}}},
+    "warnings": {"type": "array", "items": {"type": "string"}}
+  }
+}

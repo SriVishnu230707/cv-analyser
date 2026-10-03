@@ -1,28 +1,45 @@
-"""Phase 2 API: validate uploads and return the fixed example report."""
-import json
-from io import BytesIO
+"""Phase 3: local extraction and editable text preparation; no job scoring yet."""
 from pathlib import Path
-from zipfile import ZipFile, BadZipFile
+from uuid import uuid4
+
 from fastapi import FastAPI, File, Form, Request, UploadFile
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse, Response
+from pydantic import BaseModel, Field
+from backend.services.document_parser import ExtractionError, MAX_TEXT_CHARS, require_useful_text, tessdata_path
+from backend.services.extraction_runner import run_extraction
+from backend.services.resume_sections import normalize_text, parse_sections
+
 ROOT = Path(__file__).resolve().parents[1]
 MAX_FILE_BYTES = 5 * 1024 * 1024
-app = FastAPI(title="CV Analyser", version="0.2.0", description="Phase 2 demo. Every valid submission returns the fixed Phase 1 sample report.")
-def error(code, message, field, status=422):
+app = FastAPI(title="CV Analyser", version="0.3.0", description="Extract PDF/DOCX resumes and prepare corrected text. Job matching and scoring are not implemented yet.")
+
+
+def error(code: str, message: str, field: str, status: int = 422):
     return JSONResponse(status_code=status, content={"code": code, "message": message, "field": field})
+
+
 @app.exception_handler(RequestValidationError)
 async def validation_error(_request: Request, exc: RequestValidationError):
-    return error("missing_input", "Upload a resume and provide a job description.", str(exc.errors()[0]["loc"][-1]))
+    field = str(exc.errors()[0]["loc"][-1])
+    missing = exc.errors()[0]["type"] == "missing"
+    return error("missing_input" if missing else "invalid_input", "Provide the required input." if missing else "Check the text length and input format.", field)
+
+
 @app.exception_handler(Exception)
 async def processing_error(_request: Request, _exc: Exception):
     return error("processing_error", "Something went wrong. Please try again.", "request", 500)
+
+
 @app.get("/health")
 def health():
-    return {"status": "ok", "phase": 2, "analysis_mode": "demo"}
+    return {"status": "ok", "phase": 3, "analysis_mode": "not_available", "ocr_available": tessdata_path() is not None}
+
+
 @app.get("/api/demo/job")
 def demo_job():
     return {"job_description": (ROOT / "data/phase-1/cases/backend-02/job-description.txt").read_text(encoding="utf-8")}
+
 
 def demo_pdf() -> bytes:
     """Create a valid, one-page PDF of the synthetic backend-02 resume."""
@@ -48,15 +65,13 @@ def demo_resume():
     return Response(demo_pdf(), media_type="application/pdf", headers={"Content-Disposition": 'attachment; filename="sample-resume.pdf"'})
 
 
-
-@app.post("/api/analyze")
-async def analyze(resume: UploadFile = File(...), job_description: str = Form(...)):
+@app.post("/api/extract")
+async def extract(resume: UploadFile = File(...)):
     try:
-        if not 100 <= len(job_description.strip()) <= 20000:
-            return error("invalid_job_description", "Enter a job description between 100 and 20,000 characters.", "job_description")
         extension = Path(resume.filename or "").suffix.lower()
         if extension not in {".pdf", ".docx"}:
             return error("unsupported_file", "Upload a PDF or DOCX file.", "resume", 415)
+        # A bounded read prevents loading an unlimited file into application memory.
         if resume.size is not None and resume.size > MAX_FILE_BYTES:
             return error("file_too_large", "Your resume must be 5 MiB or smaller.", "resume", 413)
         content = await resume.read(MAX_FILE_BYTES + 1)
@@ -64,16 +79,37 @@ async def analyze(resume: UploadFile = File(...), job_description: str = Form(..
             return error("file_too_large", "Your resume must be 5 MiB or smaller.", "resume", 413)
         if not content:
             return error("empty_file", "This file is empty. Choose another resume.", "resume")
-        if extension == ".pdf" and not content.startswith(b"%PDF-"):
-            return error("invalid_file", "The file does not have a PDF signature. Choose a PDF document.", "resume")
-        if extension == ".docx":
-            try:
-                with ZipFile(BytesIO(content)) as archive:
-                    if not {"[Content_Types].xml", "word/document.xml"} <= set(archive.namelist()):
-                        return error("invalid_file", "The file is not a DOCX document.", "resume")
-            except BadZipFile:
-                return error("invalid_file", "The DOCX file is damaged or invalid.", "resume")
-        report = json.loads((ROOT / "data/phase-1/sample-report.json").read_text(encoding="utf-8"))
-        return JSONResponse(report, headers={"X-Analysis-Mode": "demo", "Cache-Control": "no-store"})
+        result = await run_extraction(content, extension)
+        if not result["ok"]:
+            return JSONResponse(result["error"], status_code=result["status"], headers={"Cache-Control": "no-store"})
+        return JSONResponse(result["result"], headers={"Cache-Control": "no-store"})
     finally:
         await resume.close()
+
+
+class PreviewInput(BaseModel):
+    resume_text: str = Field(max_length=MAX_TEXT_CHARS)
+    job_description: str = Field(max_length=20000)
+
+
+@app.post("/api/preview")
+def preview(body: PreviewInput):
+    text = normalize_text(body.resume_text)
+    try:
+        require_useful_text(text)
+    except ExtractionError as exc:
+        return error(exc.code, exc.message, "resume_text", exc.status)
+    job = body.job_description.strip()
+    if not 100 <= len(job) <= 20000:
+        return error("invalid_job_description", "Enter a job description between 100 and 20,000 characters.", "job_description")
+    result = {"status": "ready_for_matching", "preparation_id": str(uuid4()), "resume_text": text, "resume_sections": parse_sections(text), "job_description": job, "analysis_available": False, "warnings": ["Text preparation is complete. Job matching, scores, and improvement suggestions will be added in later phases."]}
+    return JSONResponse(result, headers={"Cache-Control": "no-store"})
+
+
+@app.post("/api/analyze", deprecated=True)
+async def analyze(resume: UploadFile = File(...), job_description: str = Form(...)):
+    """Phase 2 compatibility entry point: now returns extraction, never a fake score."""
+    if not 100 <= len(job_description.strip()) <= 20000:
+        await resume.close()
+        return error("invalid_job_description", "Enter a job description between 100 and 20,000 characters.", "job_description")
+    return await extract(resume)

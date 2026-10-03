@@ -1,29 +1,34 @@
 # CV Analyser
 
-Phase 1 defines an evidence-based resume-to-job comparison tool. This checkpoint contains the MVP specification, output contract, synthetic labeled examples, and validation scripts.
+An evidence-based resume-to-job comparison tool. Phase 1 defines the product and evaluation examples. Phase 2 established the React/FastAPI application. Phase 3 extracts actual PDF/DOCX text, supports local English OCR for PDF scans, and lets candidates review and correct text before future matching.
 
-## Artifacts
+## Run the Phase 3 application
 
-- [MVP requirements](docs/phase-1/requirements.md)
-- [Result contract and scoring policy](docs/phase-1/result-contract.md)
-- [JSON result schema](contracts/analysis-result.schema.json)
-- [24 labeled synthetic pairs](data/phase-1/README.md)
-- [Example report](data/phase-1/sample-report.json)
+See [Phase 3 setup and verification instructions](docs/phase-3.md). The current API uses port 8001 and the frontend uses 5173. Click **Load example**, **Extract resume text**, review the text, then **Prepare for matching**. No score is generated yet.
 
-## Verify
+## Phase 1 artifacts
 
-~~~text
+- [MVP requirements and acceptance criteria](docs/phase-1/requirements.md)
+- [Result contract and scoring rules](docs/phase-1/result-contract.md)
+- [Machine-readable result schema](contracts/analysis-result.schema.json)
+- [Synthetic dataset guide](data/phase-1/README.md)
+- [Example completed report](data/phase-1/sample-report.json)
+- [Labeled resume/job pairs](data/phase-1/cases)
+
+Start by reading the requirements, then compare a case's `resume.txt` and `job-description.txt` against `labels.json`. The example report illustrates the output the future application must produce.
+
+## Next implementation step: Phase 4
+
+Extract canonical skills and required/preferred job requirements with traceable source sentences. Matching and personalized scoring follow in later phases. The current application requires no accounts, cloud services, API keys, or model training.
+
+## Dataset maintenance
+
+`scripts/build_phase1_dataset.py` regenerates the synthetic fixtures deterministically. It overwrites files only inside `data/phase-1`. `scripts/validate_phase1.py` checks fixture integrity and the sample report contract.
+
+```text
 python -m pip install -r scripts/requirements.txt
 python scripts/build_phase1_dataset.py
 python scripts/validate_phase1.py
-~~~
+```
 
-18 examples are for development and 6 are reserved for evaluation. These authored synthetic references are sanity checks, not independently annotated accuracy benchmarks.
-
-## Next phase
-
-Build a React upload form and FastAPI backend that return the fixed example report. Parsing and personalized scoring follow in later phases.
-
-## Phase 2 application
-
-React/Vite upload form and FastAPI API now return a clearly marked fixed sample report. See [setup instructions](docs/phase-2.md). Real extraction comes in Phase 3.
+Project repository: [cv-analyser](https://github.com/SriVishnu230707/cv-analyser).

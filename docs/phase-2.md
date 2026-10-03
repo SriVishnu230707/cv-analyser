@@ -1,5 +1,6 @@
 # Phase 2: application foundation
 
+Historical Phase 2 record. The current application implements real extraction and review; see `docs/phase-3.md` for current behavior and setup.
 
 React + TypeScript + Vite frontend, FastAPI backend, and the Phase 1 sample report connected through a real multipart request.
 
