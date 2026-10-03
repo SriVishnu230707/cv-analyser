@@ -9,6 +9,19 @@ export interface ExtractionResult {
 export interface PreparedResume {
   status: 'ready_for_matching'; preparation_id: string; resume_text: string;
   resume_sections: ResumeSection[]; job_description: string; analysis_available: false; warnings: string[];
+  taxonomy_version: string; resume_skills: ResumeSkill[]; job_requirements: JobRequirement[];
+  excluded_job_mentions: { name: string; source: string; reason: string }[];
+  review_status: 'needs_review' | 'not_confirmed' | 'confirmed'; pending_review_count: number;
+}
+export type RequirementCategory = 'required_skill' | 'preferred_skill' | 'unclassified_skill' | 'responsibility' | 'mandatory_qualification' | 'qualification' | 'experience_requirement' | 'other_requirement' | 'excluded';
+export interface ResumeSkill {
+  name: string;
+  evidence: { text: string; section: string; matched_text: string; start: number; end: number; assertion: 'positive' | 'negated' | 'learning'; level: 'listed' | 'demonstrated' | 'mentioned' | 'negated' | 'learning' }[];
+}
+export interface JobRequirement {
+  id: string; name: string; category: RequirementCategory; source: string;
+  sources: { text: string; line_number: number }[]; classification_method: string;
+  needs_review: boolean; review_reason: string; weight: number;
 }
 export interface AnalysisReport {
   schema_version: string;

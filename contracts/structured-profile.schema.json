@@ -1,0 +1,253 @@
+{
+  "type": "object",
+  "required": [
+    "status",
+    "preparation_id",
+    "resume_text",
+    "resume_sections",
+    "job_description",
+    "analysis_available",
+    "taxonomy_version",
+    "resume_skills",
+    "job_requirements",
+    "excluded_job_mentions",
+    "review_status",
+    "pending_review_count",
+    "warnings"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "status": {
+      "const": "ready_for_matching"
+    },
+    "preparation_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "resume_text": {
+      "type": "string"
+    },
+    "resume_sections": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "name",
+          "text"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "text": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "job_description": {
+      "type": "string"
+    },
+    "analysis_available": {
+      "const": false
+    },
+    "taxonomy_version": {
+      "type": "string"
+    },
+    "resume_skills": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "name",
+          "evidence"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "evidence": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "text",
+                "section",
+                "matched_text",
+                "start",
+                "end",
+                "assertion",
+                "level"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "text": {
+                  "type": "string"
+                },
+                "section": {
+                  "type": "string"
+                },
+                "matched_text": {
+                  "type": "string"
+                },
+                "start": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "end": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "assertion": {
+                  "enum": [
+                    "positive",
+                    "negated",
+                    "learning"
+                  ]
+                },
+                "level": {
+                  "enum": [
+                    "listed",
+                    "demonstrated",
+                    "mentioned",
+                    "negated",
+                    "learning"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "job_requirements": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "category",
+          "source",
+          "sources",
+          "weight",
+          "classification_method",
+          "needs_review",
+          "review_reason"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^job-[a-f0-9]{12}$"
+          },
+          "name": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string",
+            "enum": [
+              "required_skill",
+              "preferred_skill",
+              "unclassified_skill",
+              "responsibility",
+              "mandatory_qualification",
+              "qualification",
+              "experience_requirement",
+              "other_requirement",
+              "excluded"
+            ]
+          },
+          "source": {
+            "type": "string"
+          },
+          "sources": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "text",
+                "line_number"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "text": {
+                  "type": "string"
+                },
+                "line_number": {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              }
+            }
+          },
+          "weight": {
+            "enum": [
+              0,
+              1
+            ]
+          },
+          "classification_method": {
+            "enum": [
+              "explicit",
+              "heading",
+              "inferred",
+              "user"
+            ]
+          },
+          "needs_review": {
+            "type": "boolean"
+          },
+          "review_reason": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "excluded_job_mentions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "name",
+          "source",
+          "reason"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "source": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "review_status": {
+      "enum": [
+        "needs_review",
+        "not_confirmed",
+        "confirmed"
+      ]
+    },
+    "pending_review_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "warnings": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cv-analyser.local/contracts/structured-profile.schema.json",
+  "title": "Phase 4 structured profile"
+}

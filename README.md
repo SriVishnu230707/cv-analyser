@@ -1,10 +1,10 @@
 # CV Analyser
 
-An evidence-based resume-to-job comparison tool. Phase 1 defines the product and evaluation examples. Phase 2 established the React/FastAPI application. Phase 3 extracts actual PDF/DOCX text, supports local English OCR for PDF scans, and lets candidates review and correct text before future matching.
+An evidence-based resume-to-job comparison tool. Phase 1 defines the product and evaluation examples. Phase 2 established the React/FastAPI application. Phase 3 extracts actual PDF/DOCX text and supports local English OCR. Phase 4 extracts canonical skills with resume evidence and structures job requirements for category review.
 
-## Run the Phase 3 application
+## Run the Phase 4 application
 
-See [Phase 3 setup and verification instructions](docs/phase-3.md). The current API uses port 8001 and the frontend uses 5173. Click **Load example**, **Extract resume text**, review the text, then **Prepare for matching**. No score is generated yet.
+See [Phase 4 setup and verification instructions](docs/phase-4.md). The current API uses port 8001 and the frontend uses 5173. Click **Load example**, **Extract resume text**, review the text, then **Extract skills & requirements**. Review unclear categories and confirm the requirements. No match score is generated yet.
 
 ## Phase 1 artifacts
 
@@ -17,9 +17,9 @@ See [Phase 3 setup and verification instructions](docs/phase-3.md). The current 
 
 Start by reading the requirements, then compare a case's `resume.txt` and `job-description.txt` against `labels.json`. The example report illustrates the output the future application must produce.
 
-## Next implementation step: Phase 4
+## Next implementation step: Phase 5
 
-Extract canonical skills and required/preferred job requirements with traceable source sentences. Matching and personalized scoring follow in later phases. The current application requires no accounts, cloud services, API keys, or model training.
+Match the reviewed resume evidence against job requirements, identify requirements not evidenced in the resume, and calculate explainable scores using the Phase 1 contract. The current application requires no accounts, cloud services, API keys, or model training.
 
 ## Dataset maintenance
 

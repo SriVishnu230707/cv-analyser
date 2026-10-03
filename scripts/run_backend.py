@@ -5,9 +5,10 @@ from pathlib import Path
 
 root = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(root))
-local_dependencies = root / ".tools" / "backend"
-if local_dependencies.is_dir():
-    sys.path.insert(0, str(local_dependencies))
+for folder in ("nlp", "backend"):
+    local_dependencies = root / ".tools" / folder
+    if local_dependencies.is_dir():
+        sys.path.insert(0, str(local_dependencies))
 
 if __name__ == "__main__":
     import uvicorn

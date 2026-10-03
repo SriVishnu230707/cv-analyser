@@ -1,6 +1,6 @@
-"""Phase 3: local extraction and editable text preparation; no job scoring yet."""
+"""Phase 4: extraction, resume skill evidence, and reviewable job requirements."""
 from pathlib import Path
-from uuid import uuid4
+from typing import Literal
 
 from fastapi import FastAPI, File, Form, Request, UploadFile
 from fastapi.exceptions import RequestValidationError
@@ -8,11 +8,12 @@ from fastapi.responses import JSONResponse, Response
 from pydantic import BaseModel, Field
 from backend.services.document_parser import ExtractionError, MAX_TEXT_CHARS, require_useful_text, tessdata_path
 from backend.services.extraction_runner import run_extraction
-from backend.services.resume_sections import normalize_text, parse_sections
+from backend.services.resume_sections import normalize_text
+from backend.services.structured_profile import prepare_profile
 
 ROOT = Path(__file__).resolve().parents[1]
 MAX_FILE_BYTES = 5 * 1024 * 1024
-app = FastAPI(title="CV Analyser", version="0.3.0", description="Extract PDF/DOCX resumes and prepare corrected text. Job matching and scoring are not implemented yet.")
+app = FastAPI(title="CV Analyser", version="0.4.0", description="Extract resumes, canonical skills, and reviewable job requirements. Matching and scoring are not implemented yet.")
 
 
 def error(code: str, message: str, field: str, status: int = 422):
@@ -33,7 +34,7 @@ async def processing_error(_request: Request, _exc: Exception):
 
 @app.get("/health")
 def health():
-    return {"status": "ok", "phase": 3, "analysis_mode": "not_available", "ocr_available": tessdata_path() is not None}
+    return {"status": "ok", "phase": 4, "analysis_mode": "not_available", "ocr_available": tessdata_path() is not None}
 
 
 @app.get("/api/demo/job")
@@ -102,7 +103,33 @@ def preview(body: PreviewInput):
     job = body.job_description.strip()
     if not 100 <= len(job) <= 20000:
         return error("invalid_job_description", "Enter a job description between 100 and 20,000 characters.", "job_description")
-    result = {"status": "ready_for_matching", "preparation_id": str(uuid4()), "resume_text": text, "resume_sections": parse_sections(text), "job_description": job, "analysis_available": False, "warnings": ["Text preparation is complete. Job matching, scores, and improvement suggestions will be added in later phases."]}
+    result = prepare_profile(text, job)
+    return JSONResponse(result, headers={"Cache-Control": "no-store"})
+
+
+class CategoryCorrection(BaseModel):
+    requirement_id: str = Field(max_length=80)
+    category: Literal["required_skill", "preferred_skill", "unclassified_skill", "responsibility", "mandatory_qualification", "qualification", "experience_requirement", "other_requirement", "excluded"]
+
+
+class RequirementReviewInput(PreviewInput):
+    corrections: list[CategoryCorrection] = Field(max_length=500)
+
+
+@app.post("/api/requirements/review")
+def review(body: RequirementReviewInput):
+    text = normalize_text(body.resume_text)
+    try:
+        require_useful_text(text)
+    except ExtractionError as exc:
+        return error(exc.code, exc.message, "resume_text", exc.status)
+    job = body.job_description.strip()
+    if not 100 <= len(job) <= 20000:
+        return error("invalid_job_description", "Enter a job description between 100 and 20,000 characters.", "job_description")
+    try:
+        result = prepare_profile(text, job, [item.model_dump() for item in body.corrections])
+    except ValueError as exc:
+        return error("invalid_review", str(exc), "corrections")
     return JSONResponse(result, headers={"Cache-Control": "no-store"})
 
 
