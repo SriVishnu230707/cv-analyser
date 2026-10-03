@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CV Analyser result",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "analysis_id", "status", "resume_sections", "requirements", "matches", "requirements_not_evidenced", "qualifications", "scores", "readability", "suggestions", "warnings"],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "analysis_id": {"type": "string", "minLength": 1},
+    "status": {"enum": ["complete", "insufficient_requirements", "extraction_failed"]},
+    "resume_sections": {"type": "array", "items": {"type": "object", "additionalProperties": false, "required": ["name", "text"], "properties": {"name": {"type": "string"}, "text": {"type": "string"}}}},
+    "requirements": {"type": "array", "items": {"$ref": "#/$defs/requirement"}},
+    "matches": {"type": "array", "items": {"$ref": "#/$defs/match"}},
+    "requirements_not_evidenced": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+    "qualifications": {"type": "array", "items": {"type": "object", "additionalProperties": false, "required": ["requirement_id", "status", "evidence", "reason"], "properties": {"requirement_id": {"type": "string"}, "status": {"enum": ["met", "not_evidenced", "uncertain"]}, "evidence": {"oneOf": [{"$ref": "#/$defs/evidence"}, {"type": "null"}]}, "reason": {"type": "string"}}}},
+    "scores": {"type": "object", "additionalProperties": false, "required": ["overall", "components"], "properties": {"overall": {"$ref": "#/$defs/score"}, "components": {"type": "object", "additionalProperties": false, "required": ["required_skills", "preferred_skills", "responsibilities"], "properties": {"required_skills": {"$ref": "#/$defs/component"}, "preferred_skills": {"$ref": "#/$defs/component"}, "responsibilities": {"$ref": "#/$defs/component"}}}}},
+    "readability": {"type": "object", "additionalProperties": false, "required": ["status", "issues"], "properties": {"status": {"enum": ["not_assessed", "readable", "needs_review", "failed"]}, "issues": {"type": "array", "items": {"type": "string"}}}},
+    "suggestions": {"type": "array", "items": {"type": "object", "additionalProperties": false, "required": ["priority", "requirement_ids", "rationale", "action", "rewrite"], "properties": {"priority": {"enum": ["high", "medium", "low"]}, "requirement_ids": {"type": "array", "uniqueItems": true, "items": {"type": "string"}}, "rationale": {"type": "string"}, "action": {"type": "string"}, "rewrite": {"type": ["string", "null"]}}}},
+    "warnings": {"type": "array", "items": {"type": "string"}}
+  },
+  "allOf": [
+    {"if": {"properties": {"status": {"const": "complete"}}}, "then": {"properties": {"scores": {"properties": {"overall": {"type": "number"}}}}}},
+    {"if": {"properties": {"status": {"enum": ["insufficient_requirements", "extraction_failed"]}}}, "then": {"properties": {"scores": {"properties": {"overall": {"type": "null"}}}}}},
+    {"if": {"properties": {"status": {"const": "extraction_failed"}}}, "then": {"properties": {"matches": {"maxItems": 0}, "readability": {"properties": {"status": {"const": "failed"}}}}}}
+  ],
+  "$defs": {
+    "score": {"type": ["number", "null"], "minimum": 0, "maximum": 100},
+    "evidence": {"type": "object", "additionalProperties": false, "required": ["text", "section"], "properties": {"text": {"type": "string", "minLength": 1}, "section": {"type": "string", "minLength": 1}}},
+    "requirement": {"type": "object", "additionalProperties": false, "required": ["id", "category", "name", "weight", "source"], "properties": {"id": {"type": "string", "minLength": 1}, "category": {"enum": ["required_skill", "preferred_skill", "responsibility", "mandatory_qualification"]}, "name": {"type": "string", "minLength": 1}, "weight": {"type": "number", "minimum": 0}, "source": {"type": "string", "minLength": 1}}},
+    "match": {"type": "object", "additionalProperties": false, "required": ["requirement_id", "status", "method", "evidence"], "properties": {"requirement_id": {"type": "string"}, "status": {"enum": ["listed", "demonstrated", "possible"]}, "method": {"enum": ["exact", "alias", "semantic"]}, "evidence": {"$ref": "#/$defs/evidence"}}},
+    "component": {"type": "object", "additionalProperties": false, "required": ["score", "base_weight", "effective_weight"], "properties": {"score": {"$ref": "#/$defs/score"}, "base_weight": {"type": "number", "minimum": 0, "maximum": 1}, "effective_weight": {"type": "number", "minimum": 0, "maximum": 1}}}
+  }
+}

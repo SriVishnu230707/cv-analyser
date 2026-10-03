@@ -1,0 +1,9 @@
+Synthetic Candidate backend-05
+Summary
+Entry-level software-development candidate.
+Skills
+No experience with Python, SQL, Flask, Docker, Redis, AWS.
+Projects
+Organized a fictional campus event.
+Education
+Completed a fictional introductory programming course.

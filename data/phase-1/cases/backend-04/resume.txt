@@ -1,0 +1,9 @@
+Synthetic Candidate backend-04
+Summary
+Entry-level software-development candidate.
+Skills
+python, sql, flask, docker, redis, Amazon Web Services
+Projects
+Maintained meeting notes for a fictional student club.
+Education
+Completed a fictional introductory programming course.

@@ -1,0 +1,162 @@
+{
+  "case_id": "frontend-03",
+  "scenario": "listed_only",
+  "annotation_origin": "authored_synthetic_reference",
+  "requirements": [
+    {
+      "id": "req-1",
+      "category": "required_skill",
+      "name": "JavaScript",
+      "weight": 3,
+      "source": "Required: JavaScript."
+    },
+    {
+      "id": "req-2",
+      "category": "required_skill",
+      "name": "React",
+      "weight": 3,
+      "source": "Required: React."
+    },
+    {
+      "id": "req-3",
+      "category": "required_skill",
+      "name": "CSS",
+      "weight": 2,
+      "source": "Required: CSS."
+    },
+    {
+      "id": "req-4",
+      "category": "required_skill",
+      "name": "Git",
+      "weight": 2,
+      "source": "Required: Git."
+    },
+    {
+      "id": "pref-1",
+      "category": "preferred_skill",
+      "name": "TypeScript",
+      "weight": 1,
+      "source": "Preferred: TypeScript."
+    },
+    {
+      "id": "pref-2",
+      "category": "preferred_skill",
+      "name": "Jest",
+      "weight": 1,
+      "source": "Preferred: Jest."
+    },
+    {
+      "id": "resp-1",
+      "category": "responsibility",
+      "name": "Build interactive user interfaces",
+      "weight": 1,
+      "source": "Build interactive user interfaces."
+    },
+    {
+      "id": "resp-2",
+      "category": "responsibility",
+      "name": "Style responsive pages and track code changes",
+      "weight": 1,
+      "source": "Style responsive pages and track code changes."
+    },
+    {
+      "id": "qual-1",
+      "category": "mandatory_qualification",
+      "name": "Computer science degree or equivalent practical experience",
+      "weight": 0,
+      "source": "Mandatory qualification: a computer science degree or equivalent practical experience."
+    }
+  ],
+  "matches": [
+    {
+      "requirement_id": "req-1",
+      "status": "listed",
+      "method": "exact",
+      "evidence": {
+        "text": "JavaScript, React, CSS, Git, TypeScript, Jest",
+        "section": "Skills"
+      }
+    },
+    {
+      "requirement_id": "req-2",
+      "status": "listed",
+      "method": "exact",
+      "evidence": {
+        "text": "JavaScript, React, CSS, Git, TypeScript, Jest",
+        "section": "Skills"
+      }
+    },
+    {
+      "requirement_id": "req-3",
+      "status": "listed",
+      "method": "exact",
+      "evidence": {
+        "text": "JavaScript, React, CSS, Git, TypeScript, Jest",
+        "section": "Skills"
+      }
+    },
+    {
+      "requirement_id": "req-4",
+      "status": "listed",
+      "method": "exact",
+      "evidence": {
+        "text": "JavaScript, React, CSS, Git, TypeScript, Jest",
+        "section": "Skills"
+      }
+    },
+    {
+      "requirement_id": "pref-1",
+      "status": "listed",
+      "method": "exact",
+      "evidence": {
+        "text": "JavaScript, React, CSS, Git, TypeScript, Jest",
+        "section": "Skills"
+      }
+    },
+    {
+      "requirement_id": "pref-2",
+      "status": "listed",
+      "method": "exact",
+      "evidence": {
+        "text": "JavaScript, React, CSS, Git, TypeScript, Jest",
+        "section": "Skills"
+      }
+    }
+  ],
+  "requirements_not_evidenced": [
+    "resp-1",
+    "resp-2"
+  ],
+  "qualifications": [
+    {
+      "requirement_id": "qual-1",
+      "status": "uncertain",
+      "evidence": null,
+      "reason": "No degree is stated; equivalence of practical experience requires review."
+    }
+  ],
+  "scores": {
+    "overall": 75.0,
+    "components": {
+      "required_skills": {
+        "score": 100.0,
+        "base_weight": 0.6,
+        "effective_weight": 0.6
+      },
+      "preferred_skills": {
+        "score": 100.0,
+        "base_weight": 0.15,
+        "effective_weight": 0.15
+      },
+      "responsibilities": {
+        "score": 0.0,
+        "base_weight": 0.25,
+        "effective_weight": 0.25
+      }
+    }
+  },
+  "readability": {
+    "status": "not_assessed",
+    "issues": []
+  }
+}

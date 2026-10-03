@@ -1,0 +1,113 @@
+{
+  "case_id": "fullstack-05",
+  "scenario": "negated",
+  "annotation_origin": "authored_synthetic_reference",
+  "requirements": [
+    {
+      "id": "req-1",
+      "category": "required_skill",
+      "name": "JavaScript",
+      "weight": 3,
+      "source": "Required: JavaScript."
+    },
+    {
+      "id": "req-2",
+      "category": "required_skill",
+      "name": "Node.js",
+      "weight": 3,
+      "source": "Required: Node.js."
+    },
+    {
+      "id": "req-3",
+      "category": "required_skill",
+      "name": "PostgreSQL",
+      "weight": 2,
+      "source": "Required: PostgreSQL."
+    },
+    {
+      "id": "req-4",
+      "category": "required_skill",
+      "name": "React",
+      "weight": 2,
+      "source": "Required: React."
+    },
+    {
+      "id": "pref-1",
+      "category": "preferred_skill",
+      "name": "Docker",
+      "weight": 1,
+      "source": "Preferred: Docker."
+    },
+    {
+      "id": "pref-2",
+      "category": "preferred_skill",
+      "name": "TypeScript",
+      "weight": 1,
+      "source": "Preferred: TypeScript."
+    },
+    {
+      "id": "resp-1",
+      "category": "responsibility",
+      "name": "Build server endpoints",
+      "weight": 1,
+      "source": "Build server endpoints."
+    },
+    {
+      "id": "resp-2",
+      "category": "responsibility",
+      "name": "Build database-backed user interfaces",
+      "weight": 1,
+      "source": "Build database-backed user interfaces."
+    },
+    {
+      "id": "qual-1",
+      "category": "mandatory_qualification",
+      "name": "Computer science degree or equivalent practical experience",
+      "weight": 0,
+      "source": "Mandatory qualification: a computer science degree or equivalent practical experience."
+    }
+  ],
+  "matches": [],
+  "requirements_not_evidenced": [
+    "req-1",
+    "req-2",
+    "req-3",
+    "req-4",
+    "pref-1",
+    "pref-2",
+    "resp-1",
+    "resp-2"
+  ],
+  "qualifications": [
+    {
+      "requirement_id": "qual-1",
+      "status": "uncertain",
+      "evidence": null,
+      "reason": "No degree is stated; equivalence of practical experience requires review."
+    }
+  ],
+  "scores": {
+    "overall": 0.0,
+    "components": {
+      "required_skills": {
+        "score": 0.0,
+        "base_weight": 0.6,
+        "effective_weight": 0.6
+      },
+      "preferred_skills": {
+        "score": 0.0,
+        "base_weight": 0.15,
+        "effective_weight": 0.15
+      },
+      "responsibilities": {
+        "score": 0.0,
+        "base_weight": 0.25,
+        "effective_weight": 0.25
+      }
+    }
+  },
+  "readability": {
+    "status": "not_assessed",
+    "issues": []
+  }
+}

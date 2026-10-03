@@ -1,0 +1,11 @@
+Fictional fullstack developer opening
+This synthetic role supports a fictional internal application.
+Required: JavaScript.
+Required: Node.js.
+Required: PostgreSQL.
+Required: React.
+Preferred: Docker.
+Preferred: TypeScript.
+Build server endpoints.
+Build database-backed user interfaces.
+Mandatory qualification: a computer science degree or equivalent practical experience.

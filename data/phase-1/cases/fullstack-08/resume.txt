@@ -1,0 +1,9 @@
+Synthetic Candidate fullstack-08
+Summary
+Entry-level software-development candidate.
+Skills
+JavaScript
+Projects
+Practiced JavaScript in small introductory exercises.
+Education
+Completed a fictional introductory programming course.

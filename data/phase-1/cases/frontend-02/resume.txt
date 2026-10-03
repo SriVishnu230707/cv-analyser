@@ -1,0 +1,9 @@
+Synthetic Candidate frontend-02
+Summary
+Entry-level software-development candidate.
+Skills
+JavaScript, React, CSS
+Projects
+Built interactive interfaces using JavaScript and React.
+Education
+Completed a fictional introductory programming course.

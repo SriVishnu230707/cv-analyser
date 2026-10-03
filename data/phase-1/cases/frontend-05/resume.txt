@@ -1,0 +1,9 @@
+Synthetic Candidate frontend-05
+Summary
+Entry-level software-development candidate.
+Skills
+No experience with JavaScript, React, CSS, Git, TypeScript, Jest.
+Projects
+Organized a fictional campus event.
+Education
+Completed a fictional introductory programming course.

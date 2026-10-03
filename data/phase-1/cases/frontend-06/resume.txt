@@ -1,0 +1,9 @@
+Synthetic Candidate frontend-06
+Summary
+Entry-level software-development candidate.
+Skills
+Java, spreadsheet editing
+Projects
+Built a Java desktop calculator.
+Education
+Completed a fictional introductory programming course.

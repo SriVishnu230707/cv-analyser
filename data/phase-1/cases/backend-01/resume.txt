@@ -1,0 +1,10 @@
+Synthetic Candidate backend-01
+Summary
+Entry-level software-development candidate.
+Skills
+Python, SQL, Flask, Docker, Redis, AWS
+Projects
+Built REST APIs using Python and Flask.
+Queried application data using SQL and packaged the service using Docker.
+Education
+Completed a fictional introductory programming course.

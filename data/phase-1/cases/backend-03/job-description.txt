@@ -1,0 +1,11 @@
+Fictional backend developer opening
+This synthetic role supports a fictional internal application.
+Required: Python.
+Required: SQL.
+Required: Flask.
+Required: Docker.
+Preferred: Redis.
+Preferred: AWS.
+Build REST APIs.
+Query application data and package services for deployment.
+Mandatory qualification: a computer science degree or equivalent practical experience.

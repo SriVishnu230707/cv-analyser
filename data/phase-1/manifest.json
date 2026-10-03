@@ -1,0 +1,174 @@
+{
+  "dataset_version": "1.0.0",
+  "synthetic": true,
+  "cases": [
+    {
+      "case_id": "backend-01",
+      "role": "backend",
+      "scenario": "full_coverage",
+      "split": "development",
+      "directory": "cases/backend-01"
+    },
+    {
+      "case_id": "backend-02",
+      "role": "backend",
+      "scenario": "partial_coverage",
+      "split": "development",
+      "directory": "cases/backend-02"
+    },
+    {
+      "case_id": "backend-03",
+      "role": "backend",
+      "scenario": "listed_only",
+      "split": "development",
+      "directory": "cases/backend-03"
+    },
+    {
+      "case_id": "backend-04",
+      "role": "backend",
+      "scenario": "aliases",
+      "split": "development",
+      "directory": "cases/backend-04"
+    },
+    {
+      "case_id": "backend-05",
+      "role": "backend",
+      "scenario": "negated",
+      "split": "development",
+      "directory": "cases/backend-05"
+    },
+    {
+      "case_id": "backend-06",
+      "role": "backend",
+      "scenario": "unrelated",
+      "split": "development",
+      "directory": "cases/backend-06"
+    },
+    {
+      "case_id": "backend-07",
+      "role": "backend",
+      "scenario": "required_only",
+      "split": "evaluation",
+      "directory": "cases/backend-07"
+    },
+    {
+      "case_id": "backend-08",
+      "role": "backend",
+      "scenario": "sparse_evidence",
+      "split": "evaluation",
+      "directory": "cases/backend-08"
+    },
+    {
+      "case_id": "frontend-01",
+      "role": "frontend",
+      "scenario": "full_coverage",
+      "split": "development",
+      "directory": "cases/frontend-01"
+    },
+    {
+      "case_id": "frontend-02",
+      "role": "frontend",
+      "scenario": "partial_coverage",
+      "split": "development",
+      "directory": "cases/frontend-02"
+    },
+    {
+      "case_id": "frontend-03",
+      "role": "frontend",
+      "scenario": "listed_only",
+      "split": "development",
+      "directory": "cases/frontend-03"
+    },
+    {
+      "case_id": "frontend-04",
+      "role": "frontend",
+      "scenario": "aliases",
+      "split": "development",
+      "directory": "cases/frontend-04"
+    },
+    {
+      "case_id": "frontend-05",
+      "role": "frontend",
+      "scenario": "negated",
+      "split": "development",
+      "directory": "cases/frontend-05"
+    },
+    {
+      "case_id": "frontend-06",
+      "role": "frontend",
+      "scenario": "unrelated",
+      "split": "development",
+      "directory": "cases/frontend-06"
+    },
+    {
+      "case_id": "frontend-07",
+      "role": "frontend",
+      "scenario": "required_only",
+      "split": "evaluation",
+      "directory": "cases/frontend-07"
+    },
+    {
+      "case_id": "frontend-08",
+      "role": "frontend",
+      "scenario": "sparse_evidence",
+      "split": "evaluation",
+      "directory": "cases/frontend-08"
+    },
+    {
+      "case_id": "fullstack-01",
+      "role": "fullstack",
+      "scenario": "full_coverage",
+      "split": "development",
+      "directory": "cases/fullstack-01"
+    },
+    {
+      "case_id": "fullstack-02",
+      "role": "fullstack",
+      "scenario": "partial_coverage",
+      "split": "development",
+      "directory": "cases/fullstack-02"
+    },
+    {
+      "case_id": "fullstack-03",
+      "role": "fullstack",
+      "scenario": "listed_only",
+      "split": "development",
+      "directory": "cases/fullstack-03"
+    },
+    {
+      "case_id": "fullstack-04",
+      "role": "fullstack",
+      "scenario": "aliases",
+      "split": "development",
+      "directory": "cases/fullstack-04"
+    },
+    {
+      "case_id": "fullstack-05",
+      "role": "fullstack",
+      "scenario": "negated",
+      "split": "development",
+      "directory": "cases/fullstack-05"
+    },
+    {
+      "case_id": "fullstack-06",
+      "role": "fullstack",
+      "scenario": "unrelated",
+      "split": "development",
+      "directory": "cases/fullstack-06"
+    },
+    {
+      "case_id": "fullstack-07",
+      "role": "fullstack",
+      "scenario": "required_only",
+      "split": "evaluation",
+      "directory": "cases/fullstack-07"
+    },
+    {
+      "case_id": "fullstack-08",
+      "role": "fullstack",
+      "scenario": "sparse_evidence",
+      "split": "evaluation",
+      "directory": "cases/fullstack-08"
+    }
+  ]
+}

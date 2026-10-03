@@ -1,0 +1,11 @@
+Fictional frontend developer opening
+This synthetic role supports a fictional internal application.
+Required: JavaScript.
+Required: React.
+Required: CSS.
+Required: Git.
+Preferred: TypeScript.
+Preferred: Jest.
+Build interactive user interfaces.
+Style responsive pages and track code changes.
+Mandatory qualification: a computer science degree or equivalent practical experience.

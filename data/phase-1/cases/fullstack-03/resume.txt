@@ -1,0 +1,9 @@
+Synthetic Candidate fullstack-03
+Summary
+Entry-level software-development candidate.
+Skills
+JavaScript, Node.js, PostgreSQL, React, Docker, TypeScript
+Projects
+Coordinated study sessions for a fictional student club.
+Education
+Completed a fictional introductory programming course.

@@ -1,0 +1,9 @@
+Synthetic Candidate fullstack-02
+Summary
+Entry-level software-development candidate.
+Skills
+JavaScript, Node.js, PostgreSQL
+Projects
+Built server endpoints using JavaScript and Node.js.
+Education
+Completed a fictional introductory programming course.

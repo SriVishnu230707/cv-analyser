@@ -1,0 +1,192 @@
+{
+  "schema_version": "1.0.0",
+  "analysis_id": "sample-backend-02",
+  "status": "complete",
+  "resume_sections": [
+    {
+      "name": "Skills",
+      "text": "Python, SQL, Flask"
+    },
+    {
+      "name": "Projects",
+      "text": "Built REST APIs using Python and Flask."
+    },
+    {
+      "name": "Education",
+      "text": "Completed a fictional introductory programming course."
+    }
+  ],
+  "requirements": [
+    {
+      "id": "req-1",
+      "category": "required_skill",
+      "name": "Python",
+      "weight": 3,
+      "source": "Required: Python."
+    },
+    {
+      "id": "req-2",
+      "category": "required_skill",
+      "name": "SQL",
+      "weight": 3,
+      "source": "Required: SQL."
+    },
+    {
+      "id": "req-3",
+      "category": "required_skill",
+      "name": "Flask",
+      "weight": 2,
+      "source": "Required: Flask."
+    },
+    {
+      "id": "req-4",
+      "category": "required_skill",
+      "name": "Docker",
+      "weight": 2,
+      "source": "Required: Docker."
+    },
+    {
+      "id": "pref-1",
+      "category": "preferred_skill",
+      "name": "Redis",
+      "weight": 1,
+      "source": "Preferred: Redis."
+    },
+    {
+      "id": "pref-2",
+      "category": "preferred_skill",
+      "name": "AWS",
+      "weight": 1,
+      "source": "Preferred: AWS."
+    },
+    {
+      "id": "resp-1",
+      "category": "responsibility",
+      "name": "Build REST APIs",
+      "weight": 1,
+      "source": "Build REST APIs."
+    },
+    {
+      "id": "resp-2",
+      "category": "responsibility",
+      "name": "Query application data and package services for deployment",
+      "weight": 1,
+      "source": "Query application data and package services for deployment."
+    },
+    {
+      "id": "qual-1",
+      "category": "mandatory_qualification",
+      "name": "Computer science degree or equivalent practical experience",
+      "weight": 0,
+      "source": "Mandatory qualification: a computer science degree or equivalent practical experience."
+    }
+  ],
+  "matches": [
+    {
+      "requirement_id": "req-1",
+      "status": "demonstrated",
+      "method": "exact",
+      "evidence": {
+        "text": "Built REST APIs using Python and Flask.",
+        "section": "Projects"
+      }
+    },
+    {
+      "requirement_id": "req-2",
+      "status": "listed",
+      "method": "exact",
+      "evidence": {
+        "text": "Python, SQL, Flask",
+        "section": "Skills"
+      }
+    },
+    {
+      "requirement_id": "req-3",
+      "status": "demonstrated",
+      "method": "exact",
+      "evidence": {
+        "text": "Built REST APIs using Python and Flask.",
+        "section": "Projects"
+      }
+    },
+    {
+      "requirement_id": "resp-1",
+      "status": "demonstrated",
+      "method": "semantic",
+      "evidence": {
+        "text": "Built REST APIs using Python and Flask.",
+        "section": "Projects"
+      }
+    }
+  ],
+  "requirements_not_evidenced": [
+    "req-4",
+    "pref-1",
+    "pref-2",
+    "resp-2"
+  ],
+  "qualifications": [
+    {
+      "requirement_id": "qual-1",
+      "status": "uncertain",
+      "evidence": null,
+      "reason": "No degree is stated; equivalence of practical experience requires review."
+    }
+  ],
+  "scores": {
+    "overall": 60.5,
+    "components": {
+      "required_skills": {
+        "score": 80.0,
+        "base_weight": 0.6,
+        "effective_weight": 0.6
+      },
+      "preferred_skills": {
+        "score": 0.0,
+        "base_weight": 0.15,
+        "effective_weight": 0.15
+      },
+      "responsibilities": {
+        "score": 50.0,
+        "base_weight": 0.25,
+        "effective_weight": 0.25
+      }
+    }
+  },
+  "readability": {
+    "status": "not_assessed",
+    "issues": []
+  },
+  "suggestions": [
+    {
+      "priority": "high",
+      "requirement_ids": [
+        "req-4"
+      ],
+      "rationale": "Docker is required but no resume evidence was found.",
+      "action": "If you have used Docker, describe a specific project and what you containerized. Otherwise, consider learning it; do not add it as an existing skill.",
+      "rewrite": null
+    },
+    {
+      "priority": "medium",
+      "requirement_ids": [
+        "req-2"
+      ],
+      "rationale": "SQL is listed without a supporting project example.",
+      "action": "If accurate, describe where you used SQL and the purpose of the queries.",
+      "rewrite": null
+    },
+    {
+      "priority": "medium",
+      "requirement_ids": [
+        "resp-1"
+      ],
+      "rationale": "The API project is relevant and can be made easier to scan.",
+      "action": "Use a concise action-led bullet without inventing an outcome.",
+      "rewrite": "Built REST APIs with Python and Flask."
+    }
+  ],
+  "warnings": [
+    "Illustrative application estimate; not an employer ATS score or a proficiency assessment."
+  ]
+}

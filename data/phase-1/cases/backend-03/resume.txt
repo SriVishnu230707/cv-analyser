@@ -1,0 +1,9 @@
+Synthetic Candidate backend-03
+Summary
+Entry-level software-development candidate.
+Skills
+Python, SQL, Flask, Docker, Redis, AWS
+Projects
+Coordinated study sessions for a fictional student club.
+Education
+Completed a fictional introductory programming course.

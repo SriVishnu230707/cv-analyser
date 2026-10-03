@@ -1,0 +1,177 @@
+{
+  "case_id": "backend-01",
+  "scenario": "full_coverage",
+  "annotation_origin": "authored_synthetic_reference",
+  "requirements": [
+    {
+      "id": "req-1",
+      "category": "required_skill",
+      "name": "Python",
+      "weight": 3,
+      "source": "Required: Python."
+    },
+    {
+      "id": "req-2",
+      "category": "required_skill",
+      "name": "SQL",
+      "weight": 3,
+      "source": "Required: SQL."
+    },
+    {
+      "id": "req-3",
+      "category": "required_skill",
+      "name": "Flask",
+      "weight": 2,
+      "source": "Required: Flask."
+    },
+    {
+      "id": "req-4",
+      "category": "required_skill",
+      "name": "Docker",
+      "weight": 2,
+      "source": "Required: Docker."
+    },
+    {
+      "id": "pref-1",
+      "category": "preferred_skill",
+      "name": "Redis",
+      "weight": 1,
+      "source": "Preferred: Redis."
+    },
+    {
+      "id": "pref-2",
+      "category": "preferred_skill",
+      "name": "AWS",
+      "weight": 1,
+      "source": "Preferred: AWS."
+    },
+    {
+      "id": "resp-1",
+      "category": "responsibility",
+      "name": "Build REST APIs",
+      "weight": 1,
+      "source": "Build REST APIs."
+    },
+    {
+      "id": "resp-2",
+      "category": "responsibility",
+      "name": "Query application data and package services for deployment",
+      "weight": 1,
+      "source": "Query application data and package services for deployment."
+    },
+    {
+      "id": "qual-1",
+      "category": "mandatory_qualification",
+      "name": "Computer science degree or equivalent practical experience",
+      "weight": 0,
+      "source": "Mandatory qualification: a computer science degree or equivalent practical experience."
+    }
+  ],
+  "matches": [
+    {
+      "requirement_id": "req-1",
+      "status": "demonstrated",
+      "method": "exact",
+      "evidence": {
+        "text": "Built REST APIs using Python and Flask.",
+        "section": "Projects"
+      }
+    },
+    {
+      "requirement_id": "req-2",
+      "status": "demonstrated",
+      "method": "exact",
+      "evidence": {
+        "text": "Queried application data using SQL and packaged the service using Docker.",
+        "section": "Projects"
+      }
+    },
+    {
+      "requirement_id": "req-3",
+      "status": "demonstrated",
+      "method": "exact",
+      "evidence": {
+        "text": "Built REST APIs using Python and Flask.",
+        "section": "Projects"
+      }
+    },
+    {
+      "requirement_id": "req-4",
+      "status": "demonstrated",
+      "method": "exact",
+      "evidence": {
+        "text": "Queried application data using SQL and packaged the service using Docker.",
+        "section": "Projects"
+      }
+    },
+    {
+      "requirement_id": "pref-1",
+      "status": "listed",
+      "method": "exact",
+      "evidence": {
+        "text": "Python, SQL, Flask, Docker, Redis, AWS",
+        "section": "Skills"
+      }
+    },
+    {
+      "requirement_id": "pref-2",
+      "status": "listed",
+      "method": "exact",
+      "evidence": {
+        "text": "Python, SQL, Flask, Docker, Redis, AWS",
+        "section": "Skills"
+      }
+    },
+    {
+      "requirement_id": "resp-1",
+      "status": "demonstrated",
+      "method": "semantic",
+      "evidence": {
+        "text": "Built REST APIs using Python and Flask.",
+        "section": "Projects"
+      }
+    },
+    {
+      "requirement_id": "resp-2",
+      "status": "demonstrated",
+      "method": "semantic",
+      "evidence": {
+        "text": "Queried application data using SQL and packaged the service using Docker.",
+        "section": "Projects"
+      }
+    }
+  ],
+  "requirements_not_evidenced": [],
+  "qualifications": [
+    {
+      "requirement_id": "qual-1",
+      "status": "uncertain",
+      "evidence": null,
+      "reason": "No degree is stated; equivalence of practical experience requires review."
+    }
+  ],
+  "scores": {
+    "overall": 100.0,
+    "components": {
+      "required_skills": {
+        "score": 100.0,
+        "base_weight": 0.6,
+        "effective_weight": 0.6
+      },
+      "preferred_skills": {
+        "score": 100.0,
+        "base_weight": 0.15,
+        "effective_weight": 0.15
+      },
+      "responsibilities": {
+        "score": 100.0,
+        "base_weight": 0.25,
+        "effective_weight": 0.25
+      }
+    }
+  },
+  "readability": {
+    "status": "not_assessed",
+    "issues": []
+  }
+}

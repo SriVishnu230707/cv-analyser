@@ -1,0 +1,9 @@
+Synthetic Candidate backend-02
+Summary
+Entry-level software-development candidate.
+Skills
+Python, SQL, Flask
+Projects
+Built REST APIs using Python and Flask.
+Education
+Completed a fictional introductory programming course.

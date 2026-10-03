@@ -1,0 +1,9 @@
+Synthetic Candidate frontend-04
+Summary
+Entry-level software-development candidate.
+Skills
+JS, React.js, Cascading Style Sheets, git, TS, jest
+Projects
+Maintained meeting notes for a fictional student club.
+Education
+Completed a fictional introductory programming course.

@@ -1,0 +1,9 @@
+Synthetic Candidate backend-08
+Summary
+Entry-level software-development candidate.
+Skills
+Python
+Projects
+Practiced Python in small introductory exercises.
+Education
+Completed a fictional introductory programming course.
