@@ -21,6 +21,8 @@ Start by reading the requirements, then compare a case's `resume.txt` and `job-d
 
 Match the reviewed resume evidence against job requirements, identify requirements not evidenced in the resume, and calculate explainable scores using the Phase 1 contract. The current application requires no accounts, cloud services, API keys, or model training.
 
+See the [Phase 5 design and implementation milestones](docs/phase-5-design.md) for matching rules, score calculation, API/report changes, UI flow, and evaluation gates. This is a design; Phase 4 remains the running application.
+
 ## Dataset maintenance
 
 `scripts/build_phase1_dataset.py` regenerates the synthetic fixtures deterministically. It overwrites files only inside `data/phase-1`. `scripts/validate_phase1.py` checks fixture integrity and the sample report contract.
