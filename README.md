@@ -23,3 +23,7 @@ python scripts/validate_phase1.py
 ## Next phase
 
 Build a React upload form and FastAPI backend that return the fixed example report. Parsing and personalized scoring follow in later phases.
+
+## Phase 2 application
+
+React/Vite upload form and FastAPI API now return a clearly marked fixed sample report. See [setup instructions](docs/phase-2.md). Real extraction comes in Phase 3.
