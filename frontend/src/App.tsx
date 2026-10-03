@@ -3,6 +3,7 @@ import type { FormEvent, ChangeEvent } from 'react';
 import { ArrowRight, ArrowUpRight, Check, FileText, Leaf, LoaderCircle, LockKeyhole, ScanLine, Upload, X } from 'lucide-react';
 import { ExtractionPreview } from './ExtractionPreview';
 import { StructuredProfile } from './StructuredProfile';
+import { ComparisonPanel } from './ComparisonPanel';
 import type { ExtractionResult, PreparedResume, RequirementCategory } from './types';
 
 const MAX_BYTES = 5 * 1024 * 1024;
@@ -28,14 +29,17 @@ export default function App() {
   const [notice, setNotice] = useState('');
   const [busy, setBusy] = useState<'example' | 'extract' | 'prepare' | 'review' | null>(null);
   const [extraction, setExtraction] = useState<ExtractionResult | null>(null);
+  const [context, setContext] = useState<string | null>(null);
   const [text, setText] = useState('');
   const [reviewed, setReviewed] = useState(false);
   const [prepared, setPrepared] = useState<PreparedResume | null>(null);
+  const [requirementEdits, setRequirementEdits] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const previewRef = useRef<HTMLDivElement>(null);
   const profileRef = useRef<HTMLDivElement>(null);
   const count = job.trim().length;
   function clearExtraction() {
+    setContext(null);
     setExtraction(null); setText(''); setReviewed(false); setPrepared(null); setPreviewError('');
   }
   function selectFile(event: ChangeEvent<HTMLInputElement>) {
@@ -67,6 +71,7 @@ export default function App() {
       const form = new FormData(); form.append('resume', file);
       const response = await checkedFetch('/api/extract', { method: 'POST', body: form });
       const result: ExtractionResult = await response.json();
+      setContext(response.headers.get('X-Extraction-Context'));
       setExtraction(result); setText(result.text);
       requestAnimationFrame(() => previewRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }));
     } catch (error) { setError(requestMessage(error)); }
@@ -79,6 +84,7 @@ export default function App() {
       const response = await checkedFetch('/api/preview', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ resume_text: text, job_description: job }) });
       const result: PreparedResume = await response.json();
       setPrepared(result);
+      setRequirementEdits(false);
       requestAnimationFrame(() => profileRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }));
     } catch (error) { setPreviewError(requestMessage(error)); }
     finally { setBusy(null); }
@@ -89,14 +95,15 @@ export default function App() {
     try {
       const response = await checkedFetch('/api/requirements/review', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ resume_text: prepared.resume_text, job_description: prepared.job_description, corrections }) });
       setPrepared(await response.json());
+      setRequirementEdits(false);
     } catch (error) { setPreviewError(requestMessage(error)); }
     finally { setBusy(null); }
   }
   return <>
-    <header className="topbar"><a className="brand" href="#"><span className="brand-mark"><Leaf size={22} /></span>cv<span className="brand-light">analyser</span><span className="brand-dot">.</span></a><div className="header-right"><span className="header-label">A clearer path to your next role</span><span className="phase-badge">Phase 4 · Skills & requirements</span></div></header>
+    <header className="topbar"><a className="brand" href="#"><span className="brand-mark"><Leaf size={22} /></span>cv<span className="brand-light">analyser</span><span className="brand-dot">.</span></a><div className="header-right"><span className="header-label">A clearer path to your next role</span><span className="phase-badge">Phase 5 · Evidence & scores</span></div></header>
     <main>
       <section className="hero"><div className="eyebrow"><span className="tiny-star">✦</span> MAKE YOUR EXPERIENCE COUNT</div><h1>Your next opportunity.<br /><span>A stronger first impression.</span></h1><p>Start with the words behind your experience.<br className="desktop-break" /> Extract your resume, check the details, and review the skills a role needs.</p><div className="hero-points"><span><Check size={15} /> PDF &amp; DOCX</span><span><Check size={15} /> Local English OCR</span><span><Check size={15} /> Editable text preview</span></div></section>
-      <div className="demo-banner"><ScanLine size={19} /><p><strong>Skill extraction is live.</strong> Review resume evidence and required or preferred job skills. Matching and scores come in Phase 5.</p></div>
+      <div className="demo-banner"><ScanLine size={19} /><p><strong>Skill extraction is live.</strong> Review resume evidence and required or preferred job skills. Confirm the requirements, then compare your documented evidence.</p></div>
       <div className="workspace">
         <section className="input-card" aria-labelledby="form-title"><div className="section-heading"><div><span className="eyebrow">START WITH THE BASICS</span><h2 id="form-title">Resume meets opportunity</h2></div><span className="step-badge">01 / 03</span></div>
           <form onSubmit={extract}>
@@ -114,7 +121,8 @@ export default function App() {
         <aside className="guide"><div className="guide-top"><span className="eyebrow">A RELIABLE FIRST STEP</span><h2>Your words.<br />Clearly understood.</h2><p>A good comparison starts with complete, readable resume text.</p></div><div className="guide-item"><span className="guide-icon"><ScanLine size={21} /></span><div><h3>Extract the real content</h3><p>Read PDF text and Word paragraphs and tables. Scanned PDFs use local English OCR when available.</p></div></div><div className="guide-item"><span className="guide-icon"><FileText size={21} /></span><div><h3>Check the reading order</h3><p>Columns, images, and layouts can affect extraction. Review every important section before continuing.</p></div></div><div className="guide-item"><span className="guide-icon"><Check size={21} /></span><div><h3>Correct and prepare</h3><p>Edit the text without uploading again, then extract skills and review job requirements with their source wording.</p></div></div><div className="guide-note"><span>✦</span><p>Encrypted or damaged files need a fresh, unlocked export. Use a clear PDF scan for the best OCR results.</p></div></aside>
       </div>
       <div ref={previewRef}>{extraction ? <ExtractionPreview extraction={extraction} text={text} reviewed={reviewed} prepared={prepared} busy={busy !== null} preparing={busy === 'prepare'} jobValid={count >= 100 && count <= 20000} error={previewError} onTextChange={value => { setText(value); setReviewed(false); setPrepared(null); setPreviewError(''); }} onReviewedChange={value => { setReviewed(value); setPrepared(null); }} onRestore={() => { setText(extraction.text); setReviewed(false); setPrepared(null); setPreviewError(''); }} onPrepare={prepare} /> : null}</div>
-      <div ref={profileRef}>{prepared ? <StructuredProfile key={prepared.preparation_id} profile={prepared} disabled={busy !== null} error={previewError} onReview={reviewRequirements} /> : null}</div>
+      <div ref={profileRef}>{prepared ? <StructuredProfile key={prepared.preparation_id} profile={prepared} disabled={busy !== null} error={previewError} onCategoryEdit={() => setRequirementEdits(true)} onReview={reviewRequirements} /> : null}</div>
+      {prepared?.review_status === 'confirmed' && !requirementEdits ? <ComparisonPanel key={prepared.preparation_id} profile={prepared} context={context} /> : null}
       <footer><span>cv analyser · Built around your experience</span><span>Review your extracted text before continuing.</span></footer>
     </main>
   </>;

@@ -2,9 +2,9 @@
 
 An evidence-based resume-to-job comparison tool. Phase 1 defines the product and evaluation examples. Phase 2 established the React/FastAPI application. Phase 3 extracts actual PDF/DOCX text and supports local English OCR. Phase 4 extracts canonical skills with resume evidence and structures job requirements for category review.
 
-## Run the Phase 4 application
+## Run the Phase 5 application
 
-See [Phase 4 setup and verification instructions](docs/phase-4.md). The current API uses port 8001 and the frontend uses 5173. Click **Load example**, **Extract resume text**, review the text, then **Extract skills & requirements**. Review unclear categories and confirm the requirements. No match score is generated yet.
+See [Phase 5 comparison instructions](docs/phase-5.md) and [Phase 4 setup](docs/phase-4.md). The current API uses port 8001 and the frontend uses 5173. Extract and review the resume, confirm job requirement categories, then click **Compare with this role** for evidence and an estimated job-match score.
 
 ## Phase 1 artifacts
 
@@ -17,11 +17,11 @@ See [Phase 4 setup and verification instructions](docs/phase-4.md). The current 
 
 Start by reading the requirements, then compare a case's `resume.txt` and `job-description.txt` against `labels.json`. The example report illustrates the output the future application must produce.
 
-## Next implementation step: Phase 5
+## Next implementation step: Phase 6
 
-Match the reviewed resume evidence against job requirements, identify requirements not evidenced in the resume, and calculate explainable scores using the Phase 1 contract. The current application requires no accounts, cloud services, API keys, or model training.
+Generate factual improvement suggestions from missing evidence, listed skills, uncertain qualifications, and extraction issues. The current application requires no accounts, cloud services, API keys, or model training.
 
-See the [Phase 5 design and implementation milestones](docs/phase-5-design.md) for matching rules, score calculation, API/report changes, UI flow, and evaluation gates. This is a design; Phase 4 remains the running application.
+See the [Phase 5 design](docs/phase-5-design.md) and [implementation notes](docs/phase-5.md) for matching rules, score calculation, API/report changes, UI flow, and evaluation results.
 
 ## Dataset maintenance
 

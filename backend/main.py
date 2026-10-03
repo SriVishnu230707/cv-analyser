@@ -1,4 +1,4 @@
-"""Phase 4: extraction, resume skill evidence, and reviewable job requirements."""
+"""Phase 5: reviewed evidence matching and explainable scores."""
 from pathlib import Path
 from typing import Literal
 
@@ -10,10 +10,14 @@ from backend.services.document_parser import ExtractionError, MAX_TEXT_CHARS, re
 from backend.services.extraction_runner import run_extraction
 from backend.services.resume_sections import normalize_text
 from backend.services.structured_profile import prepare_profile
+from backend.services.analysis_service import compare
+from backend.services.extraction_context import sign_context
+from backend.services.skill_extractor import CATALOG
+import json
 
 ROOT = Path(__file__).resolve().parents[1]
 MAX_FILE_BYTES = 5 * 1024 * 1024
-app = FastAPI(title="CV Analyser", version="0.4.0", description="Extract resumes, canonical skills, and reviewable job requirements. Matching and scoring are not implemented yet.")
+app = FastAPI(title="CV Analyser", version="0.5.0", description="Extract resumes and compare reviewed evidence with job requirements.")
 
 
 def error(code: str, message: str, field: str, status: int = 422):
@@ -34,7 +38,7 @@ async def processing_error(_request: Request, _exc: Exception):
 
 @app.get("/health")
 def health():
-    return {"status": "ok", "phase": 4, "analysis_mode": "not_available", "ocr_available": tessdata_path() is not None}
+    return {"status": "ok", "phase": 5, "analysis_mode": "evidence_based", "ocr_available": tessdata_path() is not None}
 
 
 @app.get("/api/demo/job")
@@ -83,7 +87,9 @@ async def extract(resume: UploadFile = File(...)):
         result = await run_extraction(content, extension)
         if not result["ok"]:
             return JSONResponse(result["error"], status_code=result["status"], headers={"Cache-Control": "no-store"})
-        return JSONResponse(result["result"], headers={"Cache-Control": "no-store"})
+        response = JSONResponse(result["result"], headers={"Cache-Control": "no-store"})
+        response.headers['X-Extraction-Context'] = sign_context(result['result'])
+        return response
     finally:
         await resume.close()
 
@@ -114,6 +120,45 @@ class CategoryCorrection(BaseModel):
 
 class RequirementReviewInput(PreviewInput):
     corrections: list[CategoryCorrection] = Field(max_length=500)
+
+
+class SkillMapping(BaseModel):
+    requirement_id: str = Field(max_length=80)
+    canonical_skill: str = Field(max_length=80)
+
+
+class EvidenceDecision(BaseModel):
+    requirement_id: str = Field(max_length=80)
+    evidence_id: str = Field(max_length=80)
+    decision: Literal['accept', 'reject']
+
+
+class ComparisonInput(PreviewInput):
+    requirements_confirmed: Literal[True]
+    category_corrections: list[CategoryCorrection] = Field(max_length=500)
+    skill_mappings: list[SkillMapping] = Field(default_factory=list, max_length=500)
+    evidence_decisions: list[EvidenceDecision] = Field(default_factory=list, max_length=500)
+    extraction_context: str | None = Field(default=None, max_length=20000)
+
+
+@app.get('/api/skills')
+def skill_catalog():
+    return json.loads(CATALOG.read_text(encoding='utf-8'))
+
+
+@app.post('/api/compare')
+def compare_resume(body: ComparisonInput):
+    text, job = normalize_text(body.resume_text), body.job_description.strip()
+    try:
+        require_useful_text(text)
+        if len(job) < 100:
+            return error('invalid_job_description', 'Enter at least 100 characters of job description.', 'job_description')
+        result = compare(text, job, [c.model_dump() for c in body.category_corrections], [m.model_dump() for m in body.skill_mappings], [d.model_dump() for d in body.evidence_decisions], body.extraction_context)
+    except ExtractionError as exc:
+        return error(exc.code, exc.message, 'resume_text', exc.status)
+    except ValueError as exc:
+        return error('invalid_comparison', str(exc), 'review')
+    return JSONResponse(result, headers={'Cache-Control': 'no-store'})
 
 
 @app.post("/api/requirements/review")

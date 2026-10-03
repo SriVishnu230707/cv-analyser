@@ -1,0 +1,65 @@
+import { useEffect, useState } from 'react';
+import { ArrowRight, LoaderCircle } from 'lucide-react';
+import type { ComparisonReport, EvidenceDecision, PreparedResume } from './types';
+import { categoryNames } from './StructuredProfile';
+
+interface Props { profile: PreparedResume; context: string | null }
+const componentNames: Record<string, string> = { required_skills: 'Required skills', preferred_skills: 'Preferred skills', responsibilities: 'Responsibilities' };
+
+export function ComparisonPanel({ profile, context }: Props) {
+  const [report, setReport] = useState<ComparisonReport | null>(null);
+  const [decisions, setDecisions] = useState<EvidenceDecision[]>([]);
+  const [mappings, setMappings] = useState<Record<string, string>>({});
+  const [catalog, setCatalog] = useState<string[]>([]);
+  const [error, setError] = useState('');
+  const [busy, setBusy] = useState(false);
+  const [filter, setFilter] = useState('all');
+  useEffect(() => {
+    const controller = new AbortController();
+    fetch('/api/skills', { signal: controller.signal }).then(async response => {
+      if (!response.ok) throw new Error('Cannot load the skill dictionary.');
+      const body = await response.json(); setCatalog(body.skills.map((item: { name: string }) => item.name));
+    }).catch(error => { if (!controller.signal.aborted) setError(error instanceof Error ? error.message : 'Cannot reach the server.'); });
+    return () => controller.abort();
+  }, []);
+  async function compare(nextDecisions = decisions) {
+    if (busy) return;
+    setBusy(true); setError('');
+    try {
+      const response = await fetch('/api/compare', { method: 'POST', signal: AbortSignal.timeout(60000), headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ resume_text: profile.resume_text, job_description: profile.job_description, requirements_confirmed: true, category_corrections: profile.job_requirements.map(item => ({ requirement_id: item.id, category: item.category })), skill_mappings: Object.entries(mappings).filter(([, value]) => value).map(([id, value]) => ({ requirement_id: id, canonical_skill: value })), evidence_decisions: nextDecisions, extraction_context: context }) });
+      const body = await response.json();
+      if (!response.ok) throw new Error(body.message ?? 'Comparison failed. Please try again.');
+      setReport(body); setDecisions(nextDecisions);
+    } catch (error) { setError(error instanceof Error ? error.message : 'Cannot reach the server. Please try again.'); }
+    finally { setBusy(false); }
+  }
+  function decide(requirementId: string, evidenceId: string, decision: 'accept' | 'reject') {
+    const next = decisions.filter(item => item.requirement_id !== requirementId || (decision === 'reject' && item.evidence_id !== evidenceId));
+    void compare([...next, { requirement_id: requirementId, evidence_id: evidenceId, decision }]);
+  }
+  const pending = new Set(report?.possible_evidence.filter(item => item.decision === 'pending' && !report.matches.some(match => match.requirement_id === item.requirement_id)).map(item => item.requirement_id));
+  return <section className="comparison-panel" aria-labelledby="comparison-title" aria-busy={busy}>
+    <div className="section-heading"><div><span className="eyebrow">04 · CONNECT THE EVIDENCE</span><h2 id="comparison-title">How your resume fits this role</h2></div></div>
+    <div className="card"><p className="muted">Compare the confirmed requirements with your reviewed text. Skill mentions describe evidence, not verified proficiency.</p>
+      <details className="mapping-controls"><summary>Map an unfamiliar skill name (optional)</summary><p>Only map genuine aliases. You can instead change an unknown requirement to informational or excluded above.</p>{profile.job_requirements.filter(item => ['required_skill', 'preferred_skill'].includes(item.category)).map(item => <label key={item.id}>{item.name}<select aria-label={'Map ' + item.name} disabled={busy} value={mappings[item.id] ?? ''} onChange={event => { setMappings(previous => ({ ...previous, [item.id]: event.target.value })); setReport(null); setDecisions([]); }}><option value="">Use detected canonical skill</option>{catalog.map(name => <option key={name} value={name}>{name}</option>)}</select></label>)}</details>
+      <button className="analyze-button compare-button" disabled={busy} onClick={() => void compare()}>{busy ? <><LoaderCircle className="spin" size={18} />Comparing evidence…</> : <>Compare with this role<ArrowRight size={18} /></>}</button>
+      {error ? <div className="error" role="alert">{error}</div> : null}
+    </div>
+    {report ? <div className="comparison-report">
+      <div className="match-summary card" role="status"><div><span className="eyebrow">ESTIMATED JOB MATCH</span><strong>{report.scores.overall === null ? 'Not scored' : report.scores.overall.toFixed(1) + '%'}</strong></div><p>{report.scores.overall === null ? 'No scored requirements apply. Add and review explicit skills or responsibilities.' : 'An application estimate based on documented evidence. This is not an employer ATS result or a hiring probability.'}<br />{report.informational_requirement_count} informational or excluded requirements · {pending.size} requirements with possible evidence</p></div>
+      <div className="score-grid">{Object.entries(report.scores.components).map(([key, value]) => <div className="card score-card" key={key}><h3>{componentNames[key]}</h3><strong>{value.score === null ? 'Not applicable' : value.score.toFixed(1) + '%'}</strong><p>{value.credited_weight} / {value.total_weight} requirement weight credited</p><p>{(100 * value.effective_weight).toFixed(1)}% of the overall score</p></div>)}</div>
+      <div className="card requirement-report"><div className="card-title"><h3>Requirement evidence</h3></div><label htmlFor="report-filter">Show requirements</label><select id="report-filter" value={filter} onChange={event => setFilter(event.target.value)}><option value="all">All</option><option value="evidenced">Evidenced</option><option value="review">Needs review</option><option value="missing">Not evidenced</option></select>
+        {report.requirements.filter(item => item.included_in_score).filter(item => filter === 'all' || (filter === 'evidenced' ? report.matches.some(m => m.requirement_id === item.id) : filter === 'review' ? pending.has(item.id) : report.requirements_not_evidenced.includes(item.id))).map(item => {
+          const match = report.matches.find(m => m.requirement_id === item.id);
+          const candidates = report.possible_evidence.filter(m => m.requirement_id === item.id);
+          return <article className="evidence-row" key={item.id}><div><h4>{item.name}</h4><small>{categoryNames[item.category]}</small></div><span className={'outcome ' + (match ? 'positive' : 'missing')}>{match ? match.status + (match.method === 'user_confirmed' ? ' · user confirmed' : '') : pending.has(item.id) ? 'Needs review · no credit yet' : 'Not evidenced in this resume'}</span>
+            <details><summary>Job wording</summary>{item.sources.map((source, index) => <blockquote key={index}>{source.text}</blockquote>)}</details>
+            {match ? <div className="matched-excerpt"><small>{match.evidence.section} · {match.method}</small><blockquote>{match.evidence.text}</blockquote></div> : candidates.length ? <details><summary>Review possible resume evidence ({candidates.length})</summary>{candidates.map(candidate => <div className="possible-excerpt" key={candidate.evidence.id}><small>{candidate.evidence.section}</small><blockquote>{candidate.evidence.text}</blockquote><p>{candidate.reason}</p>{candidate.decision === 'pending' ? <div className="decision-buttons"><button disabled={busy} onClick={() => decide(item.id, candidate.evidence.id, 'accept')}>Confirm relevance</button><button disabled={busy} onClick={() => decide(item.id, candidate.evidence.id, 'reject')}>Reject</button></div> : <p>{candidate.decision === 'reject' ? 'Rejected · no credit' : 'Confirmed'}</p>}</div>)}</details> : <p className="muted">No eligible positive evidence was found. Learning and negated mentions earn no points.</p>}
+          </article>;
+        })}
+      </div>
+      <div className="profile-grid"><div className="card"><h3>Qualifications &amp; experience</h3>{report.qualifications.length ? report.qualifications.map(item => <article className="evidence-row" key={item.requirement_id}><h4>{report.requirements.find(r => r.id === item.requirement_id)?.name}</h4><span className="outcome">{item.status.replaceAll('_', ' ')}</span><p>{item.reason}</p>{item.evidence ? <blockquote>{item.evidence.text}</blockquote> : null}</article>) : <p className="muted">No explicit qualification requirements found.</p>}<p className="muted">These findings do not change your score.</p></div><div className="card"><h3>Readability checks</h3><p>{report.readability.status.replaceAll('_', ' ')}</p>{report.readability.issues.map((issue, index) => <p className="muted" key={index}>{issue}</p>)}<p className="muted">Readability does not contribute score points.</p></div></div>
+      <div className="profile-warnings">{report.warnings.map(warning => <p key={warning}>{warning}</p>)}</div>
+    </div> : null}
+  </section>;
+}

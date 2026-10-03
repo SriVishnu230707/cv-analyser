@@ -36,3 +36,18 @@ export interface AnalysisReport {
   suggestions: { priority: string; requirement_ids: string[]; rationale: string; action: string; rewrite: string | null }[];
   warnings: string[];
 }
+
+export interface EvidenceExcerpt { id: string; text: string; section: string; section_index: number; start: number; end: number }
+export interface EvidenceDecision { requirement_id: string; evidence_id: string; decision: 'accept' | 'reject' }
+export interface ComparisonReport {
+  schema_version: '1.1.0'; analysis_id: string; input_hash: string; status: 'complete' | 'insufficient_requirements';
+  scoring_policy_version: string; taxonomy_version: string; rule_version: string;
+  requirements: (JobRequirement & { canonical_skill: string | null; included_in_score: boolean })[];
+  matches: { requirement_id: string; status: 'listed' | 'demonstrated'; method: string; evidence: EvidenceExcerpt }[];
+  possible_evidence: { requirement_id: string; evidence: EvidenceExcerpt; reason: string; decision: 'pending' | 'accept' | 'reject' }[];
+  requirements_not_evidenced: string[];
+  qualifications: { requirement_id: string; status: 'met' | 'not_evidenced' | 'uncertain'; evidence: EvidenceExcerpt | null; reason: string }[];
+  scores: { overall: number | null; components: Record<string, { score: number | null; base_weight: number; effective_weight: number; credited_weight: number; total_weight: number }> };
+  readability: { status: string; issues: string[] }; informational_requirement_count: number; warnings: string[];
+  suggestions: { id: string; priority: 'high' | 'medium' | 'low'; kind: string; requirement_ids: string[]; rationale: string; action: string; rewrite: string | null; evidence: EvidenceExcerpt | null }[];
+}

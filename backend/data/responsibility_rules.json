@@ -1,0 +1,11 @@
+{
+  "version": "1.0.0",
+  "rules": [
+    {"id":"api", "action":"\\b(build|built|develop|developed|design|designed|implement|implemented)\\b", "object":"\\b(rest(?:ful)? apis?|apis?|endpoints?)\\b"},
+    {"id":"data", "action":"\\b(query|queried)\\b", "object":"\\b(data|databases?|sql)\\b"},
+    {"id":"package", "action":"\\b(package|packaged)\\b", "object":"\\b(services?|applications?)\\b"},
+    {"id":"deploy", "action":"\\b(deploy|deployed)\\b", "object":"\\b(services?|applications?)\\b"},
+    {"id":"test", "action":"\\b(test|tested|write|wrote|implement|implemented)\\b", "object":"\\b(tests?|testing)\\b"},
+    {"id":"ui", "action":"\\b(build|built|develop|developed|design|designed|implement|implemented)\\b", "object":"\\b(user interfaces?|interfaces?|frontend|front-end)\\b"}
+  ]
+}

@@ -52,7 +52,8 @@ def assertion(text: str, start: int, end: int):
     # Negation scopes across lists but stops at sentence/clause boundaries and contrast.
     prefix = re.split(r"[;!?]|\.(?=\s|$)|\b(?:but|however|although)\b", text[:start], flags=re.I)[-1]
     suffix = re.split(r"[;!?]|\.(?=\s|$)|\b(?:but|however|although)\b", text[end:], flags=re.I)[0]
-    if NEGATION.search(prefix) or re.search(r"\bno\s+$", prefix, re.I) or re.match(r"\s+(?:is |experience is )?(?:not|isn't) (?:required|needed|necessary)\b", suffix, re.I):
+    negative_prefix = re.sub(r'\bnot only\b', '', prefix, flags=re.I)
+    if NEGATION.search(prefix) or re.search(r"\b(?:no|not|never|didn't|don't|cannot|can't)\b", negative_prefix, re.I) or re.match(r"\s+(?:is |experience is )?(?:not|isn't) (?:required|needed|necessary|used|known)\b", suffix, re.I):
         return "negated"
     if LEARNING.search(prefix):
         return "learning"
