@@ -1,10 +1,10 @@
 # CV Analyser
 
-An evidence-based resume-to-job comparison tool. Phase 1 defines the product and evaluation examples. Phase 2 established the React/FastAPI application. Phase 3 extracts actual PDF/DOCX text and supports local English OCR. Phase 4 extracts canonical skills with resume evidence and structures job requirements for category review.
+An evidence-based resume-to-job comparison tool. It extracts PDF/DOCX text with local English OCR, structures skills and job requirements for review, calculates explainable job-match estimates, and provides prioritized factual improvement suggestions.
 
-## Run the Phase 5 application
+## Run the Phase 6 application
 
-See [Phase 5 comparison instructions](docs/phase-5.md) and [Phase 4 setup](docs/phase-4.md). The current API uses port 8001 and the frontend uses 5173. Extract and review the resume, confirm job requirement categories, then click **Compare with this role** for evidence and an estimated job-match score.
+See [Phase 6 improvement-plan instructions](docs/phase-6.md) and [Phase 4 setup](docs/phase-4.md). The current API uses port 8001 and the frontend uses 5173. Extract and review the resume, confirm job requirement categories, then click **Compare with this role** for scores, evidence, and prioritized improvement suggestions. No cloud model or API key is required.
 
 ## Phase 1 artifacts
 
@@ -17,9 +17,9 @@ See [Phase 5 comparison instructions](docs/phase-5.md) and [Phase 4 setup](docs/
 
 Start by reading the requirements, then compare a case's `resume.txt` and `job-description.txt` against `labels.json`. The example report illustrates the output the future application must produce.
 
-## Next implementation step: Phase 6
+## Further improvements
 
-Generate factual improvement suggestions from missing evidence, listed skills, uncertain qualifications, and extraction issues. The current application requires no accounts, cloud services, API keys, or model training.
+Possible future work includes report export, broader rule coverage, optional semantic evidence proposals, and more extensive source-grounded rewrites. Current suggestions preserve documented facts and do not edit resumes automatically.
 
 See the [Phase 5 design](docs/phase-5-design.md) and [implementation notes](docs/phase-5.md) for matching rules, score calculation, API/report changes, UI flow, and evaluation results.
 

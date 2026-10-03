@@ -5,5 +5,6 @@ import './styles.css';
 import './preview.css';
 import './profile.css';
 import './comparison.css';
+import './suggestions.css';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(<React.StrictMode><App /></React.StrictMode>);

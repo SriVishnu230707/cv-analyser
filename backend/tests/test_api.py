@@ -24,7 +24,7 @@ def post(filename="resume.pdf", content=None):
 
 def test_health_and_examples():
     response = client.get("/health").json()
-    assert response["phase"] == 5
+    assert response["phase"] == 6
     assert response["analysis_mode"] == "evidence_based"
     assert isinstance(response["ocr_available"], bool)
     assert client.get("/api/demo/job").json()["job_description"] == JOB
@@ -199,7 +199,7 @@ def test_preview_validation(text, job, field):
 
 
 def test_normalization_preserves_symbols_unicode_and_boundaries():
-    assert normalize_text("Skills\r\n C++,\t C#,\u00a0Python\r\n\r\n\r\nÃ‰ducation") == "Skills\nC++, C#, Python\n\nÃ‰ducation"
+    assert normalize_text("Skills\r\n C++,\t C#,\u00a0Python\r\n\r\n\r\n\u00c9ducation") == "Skills\nC++, C#, Python\n\n\u00c9ducation"
 
 
 def test_heading_aliases_inline_values_and_preamble():

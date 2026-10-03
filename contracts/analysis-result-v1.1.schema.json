@@ -181,7 +181,10 @@
           "requirement_ids",
           "rationale",
           "action",
-          "rewrite"
+          "rewrite",
+          "id",
+          "kind",
+          "evidence"
         ],
         "properties": {
           "priority": {
@@ -208,6 +211,31 @@
             "type": [
               "string",
               "null"
+            ]
+          },
+          "id": {
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "missing_skill",
+              "listed_skill",
+              "responsibility_gap",
+              "evidence_review",
+              "qualification_review",
+              "readability",
+              "confirmed_evidence",
+              "bullet_clarity"
+            ]
+          },
+          "evidence": {
+            "oneOf": [
+              {
+                "$ref": "#/$defs/evidence"
+              },
+              {
+                "type": "null"
+              }
             ]
           }
         }

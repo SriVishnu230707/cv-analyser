@@ -1,4 +1,4 @@
-"""Phase 5: reviewed evidence matching and explainable scores."""
+"""Phase 6: reviewed matching, explainable scores, and factual suggestions."""
 from pathlib import Path
 from typing import Literal
 
@@ -17,7 +17,7 @@ import json
 
 ROOT = Path(__file__).resolve().parents[1]
 MAX_FILE_BYTES = 5 * 1024 * 1024
-app = FastAPI(title="CV Analyser", version="0.5.0", description="Extract resumes and compare reviewed evidence with job requirements.")
+app = FastAPI(title="CV Analyser", version="0.6.0", description="Extract resumes and compare reviewed evidence with job requirements.")
 
 
 def error(code: str, message: str, field: str, status: int = 422):
@@ -38,7 +38,7 @@ async def processing_error(_request: Request, _exc: Exception):
 
 @app.get("/health")
 def health():
-    return {"status": "ok", "phase": 5, "analysis_mode": "evidence_based", "ocr_available": tessdata_path() is not None}
+    return {"status": "ok", "phase": 6, "analysis_mode": "evidence_based", "ocr_available": tessdata_path() is not None}
 
 
 @app.get("/api/demo/job")

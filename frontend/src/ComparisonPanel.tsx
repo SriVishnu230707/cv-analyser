@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { ArrowRight, LoaderCircle } from 'lucide-react';
 import type { ComparisonReport, EvidenceDecision, PreparedResume } from './types';
 import { categoryNames } from './StructuredProfile';
+import { ImprovementSuggestions } from './ImprovementSuggestions';
 
 interface Props { profile: PreparedResume; context: string | null }
 const componentNames: Record<string, string> = { required_skills: 'Required skills', preferred_skills: 'Preferred skills', responsibilities: 'Responsibilities' };
@@ -59,6 +60,7 @@ export function ComparisonPanel({ profile, context }: Props) {
         })}
       </div>
       <div className="profile-grid"><div className="card"><h3>Qualifications &amp; experience</h3>{report.qualifications.length ? report.qualifications.map(item => <article className="evidence-row" key={item.requirement_id}><h4>{report.requirements.find(r => r.id === item.requirement_id)?.name}</h4><span className="outcome">{item.status.replaceAll('_', ' ')}</span><p>{item.reason}</p>{item.evidence ? <blockquote>{item.evidence.text}</blockquote> : null}</article>) : <p className="muted">No explicit qualification requirements found.</p>}<p className="muted">These findings do not change your score.</p></div><div className="card"><h3>Readability checks</h3><p>{report.readability.status.replaceAll('_', ' ')}</p>{report.readability.issues.map((issue, index) => <p className="muted" key={index}>{issue}</p>)}<p className="muted">Readability does not contribute score points.</p></div></div>
+      <ImprovementSuggestions key={report.analysis_id} report={report} />
       <div className="profile-warnings">{report.warnings.map(warning => <p key={warning}>{warning}</p>)}</div>
     </div> : null}
   </section>;
