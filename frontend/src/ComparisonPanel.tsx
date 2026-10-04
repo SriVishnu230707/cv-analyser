@@ -4,6 +4,7 @@ import type { ComparisonReport, EvidenceDecision, PreparedResume } from './types
 import { categoryNames } from './StructuredProfile';
 import { ImprovementSuggestions } from './ImprovementSuggestions';
 import { checkedFetch, requestMessage } from './api';
+import { fetchSkillCatalog } from './skillCatalog';
 
 interface Props { profile: PreparedResume; context: string | null }
 const componentNames: Record<string, string> = { required_skills: 'Required skills', preferred_skills: 'Preferred skills', responsibilities: 'Responsibilities' };
@@ -23,8 +24,8 @@ export function ComparisonPanel({ profile, context }: Props) {
   useEffect(() => () => exportController.current?.abort(), []);
   useEffect(() => {
     const controller = new AbortController();
-    checkedFetch('/api/skills', { signal: controller.signal }).then(async response => {
-      const body = await response.json(); setCatalog(body.skills.map((item: { name: string }) => item.name));
+    fetchSkillCatalog(controller.signal).then(body => {
+      if (!controller.signal.aborted) setCatalog(body.skills.map(item => item.name));
     }).catch(error => { if (!controller.signal.aborted) setError(requestMessage(error)); });
     return () => controller.abort();
   }, []);

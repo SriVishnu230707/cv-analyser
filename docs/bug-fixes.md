@@ -18,3 +18,11 @@ npm run build
 ```
 
 Scoring weights are unchanged. Automatic coverage may decrease where an old rule incorrectly credited unrelated or learning evidence; users can review eligible positive mentions explicitly.
+
+## Phase 8 follow-up review
+
+Responsibility rules previously treated different objects within a task family as interchangeable. Monitoring metrics could automatically satisfy monitoring logs or service health; build/deployment/CI/CD pipelines and data/ETL pipelines had the same issue. Rule version **1.1.1** now distinguishes these targets, supports singular/plural pipeline wording, and sends multi-target or mismatched cases through evidence review. JSON exports use the same corrected matching results. Taxonomy version remains 1.1.0.
+
+A successful but malformed `/api/skills` response, such as `{"version":"bad","skills":null}`, could crash the page. The dictionary and comparison mapping controls now share runtime validation of catalog entries and aliases. Invalid data produces a readable error and the dictionary can retry without losing the page.
+
+Follow-up validation: **129 backend tests**, **7 frontend tests**, and the production build passed. Browser checks verified malformed-dictionary recovery and the corrected monitoring requirement workflow.

@@ -43,7 +43,8 @@ def test_new_tasks_have_verbatim_evidence_and_versioned_rules(task, evidence):
     automatic = [m for m in report['matches'] if m['method'] == 'rule']
     assert len(automatic) == 1
     assert automatic[0]['evidence']['text'] == evidence
-    assert report['rule_version'] == report['taxonomy_version'] == '1.1.0'
+    assert report['rule_version'] == '1.1.1'
+    assert report['taxonomy_version'] == '1.1.0'
     assert report['scores']['overall'] == 100
 
 
@@ -72,7 +73,7 @@ def test_new_task_proposals_preserve_confirmation_gate_and_exports():
 
 def test_rules_are_unique_and_regexes_compile():
     catalog = rules()
-    assert catalog['version'] == '1.1.0'
+    assert catalog['version'] == '1.1.1'
     assert len({r['id'] for r in catalog['rules']}) == len(catalog['rules']) == 10
     for rule in catalog['rules']:
         re.compile(rule['action']); re.compile(rule['object'])

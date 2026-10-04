@@ -38,10 +38,16 @@ def rule_match(requirement, text):
     if not matched or len(matched) != 1 or re.search(r'\b(?:and|or|also)\b', requirement, re.I):
         return False
     rule = matched[0]
+    object_pattern = rule['object']
+    if 'object_groups' in rule:
+        targets = [pattern for pattern in rule['object_groups'] if re.search(pattern, requirement, re.I)]
+        if len(targets) != 1:
+            return False
+        object_pattern = targets[0]
     required_skills = {m['name'] for m in skill_mentions(requirement)}
     # An action and its object/tools must belong to the same assertion.
     clauses = re.split(r"[;!?]|\.(?=\s|$)|\b(?:but|however|although)\b", text, flags=re.I)
-    return any(positive_action(clause) and re.search(rule['action'], clause, re.I) and re.search(rule['object'], clause, re.I) and not required_skills - {m['name'] for m in skill_mentions(clause)} for clause in clauses)
+    return any(positive_action(clause) and re.search(rule['action'], clause, re.I) and re.search(object_pattern, clause, re.I) and not required_skills - {m['name'] for m in skill_mentions(clause)} for clause in clauses)
 
 
 def match_evidence(profile, requirements, input_hash, decisions):

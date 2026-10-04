@@ -1,5 +1,5 @@
 {
-  "version": "1.1.0",
+  "version": "1.1.1",
   "rules": [
     {"id": "api", "action": "\\b(build|built|develop|developed|design|designed|implement|implemented)\\b", "object": "\\b(rest(?:ful)? apis?|apis?|endpoints?)\\b"},
     {"id": "data", "action": "\\b(query|queried)\\b", "object": "\\b(data|databases?|sql)\\b"},
@@ -7,9 +7,9 @@
     {"id": "deploy", "action": "\\b(deploy|deployed)\\b", "object": "\\b(services?|applications?)\\b"},
     {"id": "test", "action": "\\b(test|tested|write|wrote|implement|implemented)\\b", "object": "\\b(tests?|testing)\\b"},
     {"id": "ui", "action": "\\b(build|built|develop|developed|design|designed|implement|implemented)\\b", "object": "\\b(user interfaces?|interfaces?|frontend|front-end)\\b"},
-    {"id": "monitor", "action": "\\b(monitor|monitored)\\b", "object": "\\b(metrics|logs|service health)\\b"},
+    {"id": "monitor", "action": "\\b(monitor|monitored)\\b", "object": "\\b(metrics|logs|service health)\\b", "object_groups": ["\\bmetrics\\b", "\\blogs\\b", "\\bservice health\\b"]},
     {"id": "optimize_queries", "action": "\\b(optimize|optimized|optimise|optimised)\\b", "object": "\\b(sql queries|database queries|query performance)\\b"},
-    {"id": "automate_pipeline", "action": "\\b(automate|automated)\\b", "object": "\\b(ci/cd pipelines?|build pipelines?|deployment pipelines?)\\b"},
-    {"id": "data_pipeline", "action": "\\b(build|built|develop|developed|implement|implemented)\\b", "object": "\\b(data pipelines?|etl pipelines?)\\b"}
+    {"id": "automate_pipeline", "action": "\\b(automate|automated)\\b", "object": "\\b(ci/cd pipelines?|build pipelines?|deployment pipelines?)\\b", "object_groups": ["\\bci/cd pipelines?\\b", "\\bbuild pipelines?\\b", "\\bdeployment pipelines?\\b"]},
+    {"id": "data_pipeline", "action": "\\b(build|built|develop|developed|implement|implemented)\\b", "object": "\\b(data pipelines?|etl pipelines?)\\b", "object_groups": ["\\bdata pipelines?\\b", "\\betl pipelines?\\b"]}
   ]
 }

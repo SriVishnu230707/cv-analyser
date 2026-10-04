@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
-import { checkedFetch, requestMessage } from './api';
-
-interface Catalog { version: string; skills: { name: string; aliases: string[] }[] }
+import { requestMessage } from './api';
+import { fetchSkillCatalog } from './skillCatalog';
+import type { SkillCatalog } from './skillCatalog';
 
 export function SkillDictionary() {
-  const [catalog, setCatalog] = useState<Catalog | null>(null);
+  const [catalog, setCatalog] = useState<SkillCatalog | null>(null);
   const [query, setQuery] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -15,8 +15,8 @@ export function SkillDictionary() {
     const request = new AbortController(); controller.current = request;
     setLoading(true); setError('');
     try {
-      const response = await checkedFetch('/api/skills', { signal: request.signal });
-      setCatalog(await response.json());
+      const result = await fetchSkillCatalog(request.signal);
+      if (!request.signal.aborted) setCatalog(result);
     } catch (error) { if (!request.signal.aborted) setError(requestMessage(error)); }
     finally { controller.current = null; setLoading(false); }
   }

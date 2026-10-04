@@ -16,7 +16,7 @@ Svelte, SvelteKit, NestJS, .NET, ASP.NET Core, SQLAlchemy, Celery, RabbitMQ, Apa
 
 Examples of aliases: `sklearn` → scikit-learn, `kafka` → Apache Kafka, `dotnet` → .NET, `pyspark` → Apache Spark, and `powerbi` → Power BI. Svelte/SvelteKit, SQL/SQLAlchemy, and .NET/ASP.NET Core remain separate skills. Overlapping names select the longest supported phrase.
 
-Responsibility rules version **1.1.0** adds four task families, bringing the total to ten:
+Responsibility rules version **1.1.1** includes four new task families, bringing the total to ten:
 
 | Job requirement | Eligible example |
 |---|---|
@@ -26,6 +26,8 @@ Responsibility rules version **1.1.0** adds four task families, bringing the tot
 | Build data pipelines using Apache Airflow | Built data pipelines using Apache Airflow. |
 
 Actions, objects, and required technology wording must occur within the same eligible clause under Projects or Experience. Negated/learning evidence, tool listings alone, and multi-task or unsupported wording receive no automatic responsibility credit. Possible positive evidence still needs user confirmation. The report and both export formats carry the new taxonomy and rule versions.
+
+Task targets are distinct: logs, metrics, and service health are not interchangeable, nor are build/deployment/CI/CD pipelines or data/ETL pipelines. See the [follow-up bug fixes](bug-fixes.md) for runtime dictionary validation and matching regressions.
 
 ## Validation
 
