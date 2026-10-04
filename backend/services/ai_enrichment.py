@@ -94,7 +94,11 @@ def read_context(token, input_hash, requirements):
 
 
 def cosine(left, right):
-    if not isinstance(left, list) or not isinstance(right, list) or len(left) != len(right) or not left or not all(type(n) in (int, float) and math.isfinite(n) for n in [*left, *right]):
+    try:
+        valid = isinstance(left, list) and isinstance(right, list) and len(left) == len(right) and bool(left) and all(type(n) in (int, float) and math.isfinite(n) for n in [*left, *right])
+    except OverflowError:
+        valid = False
+    if not valid:
         raise AIError('ai_invalid_response', 'The embedding response was invalid. Please retry.')
     left_norm, right_norm = math.hypot(*left), math.hypot(*right)
     if not math.isfinite(left_norm) or not math.isfinite(right_norm) or not left_norm or not right_norm:
@@ -154,6 +158,8 @@ def enrich(report):
         inputs = [r['name'] for r in scored] + [line['text'] for line in lines]
         embedded = post_openai('embeddings', {'model': settings['embedding_model'], 'input': inputs, 'dimensions': 256})
         try:
+            if not isinstance(embedded['data'], list) or any(not isinstance(row, dict) or type(row.get('index')) is not int for row in embedded['data']):
+                raise ValueError()
             rows = sorted(embedded['data'], key=lambda row: row['index'])
             if [row['index'] for row in rows] != list(range(len(inputs))):
                 raise ValueError()

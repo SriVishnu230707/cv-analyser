@@ -7,6 +7,7 @@ import { ComparisonPanel } from './ComparisonPanel';
 import type { ExtractionResult, PreparedResume, RequirementCategory } from './types';
 import { checkedFetch, requestMessage } from './api';
 import { SkillDictionary } from './SkillDictionary';
+import { parseDemoJob, parseExtraction, parseProfile } from './workflowValidation';
 
 const MAX_BYTES = 5 * 1024 * 1024;
 export default function App() {
@@ -44,7 +45,9 @@ export default function App() {
     try {
       const [jobResponse, fileResponse] = await Promise.all([checkedFetch('/api/demo/job'), checkedFetch('/api/demo/resume')]);
       const [jobData, blob] = await Promise.all([jobResponse.json(), fileResponse.blob()]);
-      setJob(jobData.job_description);
+      const exampleJob = parseDemoJob(jobData);
+      if (!blob.size || blob.size > MAX_BYTES || !(await blob.slice(0, 5).text()).startsWith('%PDF-')) throw new Error('The example resume is invalid. Please retry loading the example.');
+      setJob(exampleJob);
       setFile(new File([blob], 'sample-resume.pdf', { type: 'application/pdf' }));
       if (inputRef.current) inputRef.current.value = '';
       setNotice('Example loaded. Extract the resume to review its actual text.');
@@ -58,7 +61,7 @@ export default function App() {
     try {
       const form = new FormData(); form.append('resume', file);
       const response = await checkedFetch('/api/extract', { method: 'POST', body: form });
-      const result: ExtractionResult = await response.json();
+      const result = parseExtraction(await response.json());
       setContext(response.headers.get('X-Extraction-Context'));
       setExtraction(result); setText(result.text);
       requestAnimationFrame(() => previewRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }));
@@ -70,7 +73,7 @@ export default function App() {
     setBusy('prepare'); setPreviewError(''); setPrepared(null);
     try {
       const response = await checkedFetch('/api/preview', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ resume_text: text, job_description: job }) });
-      const result: PreparedResume = await response.json();
+      const result = parseProfile(await response.json(), text, job);
       setPrepared(result);
       setRequirementEdits(false);
       requestAnimationFrame(() => profileRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }));
@@ -82,7 +85,7 @@ export default function App() {
     setBusy('review'); setPreviewError('');
     try {
       const response = await checkedFetch('/api/requirements/review', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ resume_text: prepared.resume_text, job_description: prepared.job_description, corrections }) });
-      setPrepared(await response.json());
+      setPrepared(parseProfile(await response.json(), prepared.resume_text, prepared.job_description));
       setRequirementEdits(false);
     } catch (error) { setPreviewError(requestMessage(error)); }
     finally { setBusy(null); }

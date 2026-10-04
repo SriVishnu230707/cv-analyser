@@ -34,3 +34,12 @@ Follow-up validation: **129 backend tests**, **7 frontend tests**, and the produ
 - Successful but malformed comparison/AI responses could replace the visible report with invalid data or crash rendering. The frontend now validates the shared report schema with Ajv before updating state, checks AI metadata/context and the current input hash, and keeps the previous report on failure. AI metadata is explicitly defined in the shared contract.
 
 Validation: **156 backend tests**, **10 frontend tests**, and the production build passed. Browser fault injection confirmed that malformed AI and local-comparison responses show errors, preserve the original report, and allow a successful local retry without uncaught browser errors. Provider tests remain controlled; no live OpenAI generation was performed.
+
+## Phase 10 reliability review
+
+- Extraction, preparation, requirement review, and example loading previously trusted successful response bodies. Malformed nested data could crash rendering or replace usable state. The frontend now validates the existing extraction/profile contracts, checks returned profile inputs against the current normalized text and job, and validates the synthetic example before updating form state. Errors remain visible and can be retried. Real API fixtures cover schema compatibility and legitimate text normalization.
+- Learning and negated action wording no longer passes the contribution editing check. It uses the existing positive-action policy and does not affect job-match scores.
+- Extremely large integer embedding components now return a controlled invalid-provider error. Boolean embedding indices are rejected rather than accepted as integer indices.
+- API health and frontend/backend version metadata now consistently identify Phase 10 / version 0.10.0.
+
+Validation: **166 backend tests**, **15 frontend tests**, and the production build passed. Browser fault injection verified malformed extraction, preparation, and requirement-review responses show controlled errors, preserve usable state, and allow retries through a valid comparison at 57.5%, without uncaught browser errors. No live OpenAI calls were made. Passing these checks does not establish universal accuracy or prove the absence of all bugs.

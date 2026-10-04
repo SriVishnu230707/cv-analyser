@@ -24,7 +24,7 @@ def post(filename="resume.pdf", content=None):
 
 def test_health_and_examples():
     response = client.get("/health").json()
-    assert response["phase"] == 9
+    assert response["phase"] == 10
     assert response["analysis_mode"] == "evidence_based"
     assert isinstance(response["ocr_available"], bool)
     assert client.get("/api/demo/job").json()["job_description"] == JOB

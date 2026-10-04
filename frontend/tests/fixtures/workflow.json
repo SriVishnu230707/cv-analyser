@@ -1,0 +1,348 @@
+{
+  "extraction": {
+    "status": "extracted",
+    "file_type": "pdf",
+    "text": "Synthetic Candidate\nSummary\nSoftware developer building useful tools.\nSkills\nPython, SQL, Flask, C++, C#\nProjects\nBuilt REST APIs using Python and Flask.\nEducation\nCompleted an introductory programming course.",
+    "sections": [
+      {
+        "name": "Overview",
+        "text": "Synthetic Candidate"
+      },
+      {
+        "name": "Summary",
+        "text": "Software developer building useful tools."
+      },
+      {
+        "name": "Skills",
+        "text": "Python, SQL, Flask, C++, C#"
+      },
+      {
+        "name": "Projects",
+        "text": "Built REST APIs using Python and Flask."
+      },
+      {
+        "name": "Education",
+        "text": "Completed an introductory programming course."
+      }
+    ],
+    "pages": [
+      {
+        "number": 1,
+        "text": "Synthetic Candidate\nSummary\nSoftware developer building useful tools.\nSkills\nPython, SQL, Flask, C++, C#\nProjects\nBuilt REST APIs using Python and Flask.\nEducation\nCompleted an introductory programming course.",
+        "method": "text"
+      }
+    ],
+    "page_count": 1,
+    "ocr_used": false,
+    "readability": {
+      "status": "readable",
+      "issues": []
+    },
+    "warnings": [
+      "Check the preview for missing content and reading order before continuing."
+    ]
+  },
+  "profile": {
+    "status": "ready_for_matching",
+    "preparation_id": "345a45ac-d983-4f6d-950b-a3c856173c02",
+    "resume_text": "Synthetic Candidate\nSummary\nSoftware developer building useful tools.\nSkills\nPython, SQL, Flask, C++, C#\nProjects\nBuilt REST APIs using Python and Flask.\nEducation\nCompleted an introductory programming course.",
+    "resume_sections": [
+      {
+        "name": "Overview",
+        "text": "Synthetic Candidate"
+      },
+      {
+        "name": "Summary",
+        "text": "Software developer building useful tools."
+      },
+      {
+        "name": "Skills",
+        "text": "Python, SQL, Flask, C++, C#"
+      },
+      {
+        "name": "Projects",
+        "text": "Built REST APIs using Python and Flask."
+      },
+      {
+        "name": "Education",
+        "text": "Completed an introductory programming course."
+      }
+    ],
+    "job_description": "Fictional backend developer opening\nThis synthetic role supports a fictional internal application.\nRequired: Python.\nRequired: SQL.\nRequired: Flask.\nRequired: Docker.\nPreferred: Redis.\nPreferred: AWS.\nBuild REST APIs.\nQuery application data and package services for deployment.\nMandatory qualification: a computer science degree or equivalent practical experience.",
+    "analysis_available": false,
+    "taxonomy_version": "1.2.0",
+    "resume_skills": [
+      {
+        "name": "C#",
+        "evidence": [
+          {
+            "text": "Python, SQL, Flask, C++, C#",
+            "section": "Skills",
+            "matched_text": "C#",
+            "start": 25,
+            "end": 27,
+            "assertion": "positive",
+            "level": "listed"
+          }
+        ]
+      },
+      {
+        "name": "C++",
+        "evidence": [
+          {
+            "text": "Python, SQL, Flask, C++, C#",
+            "section": "Skills",
+            "matched_text": "C++",
+            "start": 20,
+            "end": 23,
+            "assertion": "positive",
+            "level": "listed"
+          }
+        ]
+      },
+      {
+        "name": "Flask",
+        "evidence": [
+          {
+            "text": "Python, SQL, Flask, C++, C#",
+            "section": "Skills",
+            "matched_text": "Flask",
+            "start": 13,
+            "end": 18,
+            "assertion": "positive",
+            "level": "listed"
+          },
+          {
+            "text": "Built REST APIs using Python and Flask.",
+            "section": "Projects",
+            "matched_text": "Flask",
+            "start": 33,
+            "end": 38,
+            "assertion": "positive",
+            "level": "demonstrated"
+          }
+        ]
+      },
+      {
+        "name": "Python",
+        "evidence": [
+          {
+            "text": "Python, SQL, Flask, C++, C#",
+            "section": "Skills",
+            "matched_text": "Python",
+            "start": 0,
+            "end": 6,
+            "assertion": "positive",
+            "level": "listed"
+          },
+          {
+            "text": "Built REST APIs using Python and Flask.",
+            "section": "Projects",
+            "matched_text": "Python",
+            "start": 22,
+            "end": 28,
+            "assertion": "positive",
+            "level": "demonstrated"
+          }
+        ]
+      },
+      {
+        "name": "REST APIs",
+        "evidence": [
+          {
+            "text": "Built REST APIs using Python and Flask.",
+            "section": "Projects",
+            "matched_text": "REST APIs",
+            "start": 6,
+            "end": 15,
+            "assertion": "positive",
+            "level": "demonstrated"
+          }
+        ]
+      },
+      {
+        "name": "SQL",
+        "evidence": [
+          {
+            "text": "Python, SQL, Flask, C++, C#",
+            "section": "Skills",
+            "matched_text": "SQL",
+            "start": 8,
+            "end": 11,
+            "assertion": "positive",
+            "level": "listed"
+          }
+        ]
+      }
+    ],
+    "job_requirements": [
+      {
+        "id": "job-90bbe02a5192",
+        "category": "required_skill",
+        "name": "Python",
+        "source": "Required: Python.",
+        "sources": [
+          {
+            "text": "Required: Python.",
+            "line_number": 3
+          }
+        ],
+        "weight": 1,
+        "classification_method": "explicit",
+        "needs_review": false,
+        "review_reason": ""
+      },
+      {
+        "id": "job-42452ab9a51d",
+        "category": "required_skill",
+        "name": "SQL",
+        "source": "Required: SQL.",
+        "sources": [
+          {
+            "text": "Required: SQL.",
+            "line_number": 4
+          }
+        ],
+        "weight": 1,
+        "classification_method": "explicit",
+        "needs_review": false,
+        "review_reason": ""
+      },
+      {
+        "id": "job-19f392a556ad",
+        "category": "required_skill",
+        "name": "Flask",
+        "source": "Required: Flask.",
+        "sources": [
+          {
+            "text": "Required: Flask.",
+            "line_number": 5
+          }
+        ],
+        "weight": 1,
+        "classification_method": "explicit",
+        "needs_review": false,
+        "review_reason": ""
+      },
+      {
+        "id": "job-98b3baea9c2a",
+        "category": "required_skill",
+        "name": "Docker",
+        "source": "Required: Docker.",
+        "sources": [
+          {
+            "text": "Required: Docker.",
+            "line_number": 6
+          }
+        ],
+        "weight": 1,
+        "classification_method": "explicit",
+        "needs_review": false,
+        "review_reason": ""
+      },
+      {
+        "id": "job-f0904a43b3c0",
+        "category": "preferred_skill",
+        "name": "Redis",
+        "source": "Preferred: Redis.",
+        "sources": [
+          {
+            "text": "Preferred: Redis.",
+            "line_number": 7
+          }
+        ],
+        "weight": 1,
+        "classification_method": "explicit",
+        "needs_review": false,
+        "review_reason": ""
+      },
+      {
+        "id": "job-6b08fe657234",
+        "category": "preferred_skill",
+        "name": "AWS",
+        "source": "Preferred: AWS.",
+        "sources": [
+          {
+            "text": "Preferred: AWS.",
+            "line_number": 8
+          }
+        ],
+        "weight": 1,
+        "classification_method": "explicit",
+        "needs_review": false,
+        "review_reason": ""
+      },
+      {
+        "id": "job-19b996191581",
+        "category": "unclassified_skill",
+        "name": "REST APIs",
+        "source": "Build REST APIs.",
+        "sources": [
+          {
+            "text": "Build REST APIs.",
+            "line_number": 9
+          }
+        ],
+        "weight": 1,
+        "classification_method": "inferred",
+        "needs_review": true,
+        "review_reason": "No explicit required/preferred classification."
+      },
+      {
+        "id": "job-ade0fca23ad0",
+        "category": "responsibility",
+        "name": "Build REST APIs",
+        "source": "Build REST APIs.",
+        "sources": [
+          {
+            "text": "Build REST APIs.",
+            "line_number": 9
+          }
+        ],
+        "weight": 1,
+        "classification_method": "inferred",
+        "needs_review": false,
+        "review_reason": ""
+      },
+      {
+        "id": "job-670cb32a35af",
+        "category": "responsibility",
+        "name": "Query application data and package services for deployment",
+        "source": "Query application data and package services for deployment.",
+        "sources": [
+          {
+            "text": "Query application data and package services for deployment.",
+            "line_number": 10
+          }
+        ],
+        "weight": 1,
+        "classification_method": "inferred",
+        "needs_review": false,
+        "review_reason": ""
+      },
+      {
+        "id": "job-9d2ac3d7c6b7",
+        "category": "mandatory_qualification",
+        "name": "Mandatory qualification: a computer science degree or equivalent practical experience",
+        "source": "Mandatory qualification: a computer science degree or equivalent practical experience.",
+        "sources": [
+          {
+            "text": "Mandatory qualification: a computer science degree or equivalent practical experience.",
+            "line_number": 11
+          }
+        ],
+        "weight": 0,
+        "classification_method": "explicit",
+        "needs_review": false,
+        "review_reason": ""
+      }
+    ],
+    "excluded_job_mentions": [],
+    "review_status": "needs_review",
+    "pending_review_count": 1,
+    "warnings": [
+      "Review the unclear requirement categories before matching.",
+      "Skill mentions describe resume evidence, not verified proficiency. Confirm requirement categories before comparison."
+    ]
+  }
+}

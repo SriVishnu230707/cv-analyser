@@ -37,3 +37,20 @@ def test_invalid_vectors_fail_cleanly(left, right):
 
 def test_large_finite_vectors_have_stable_similarity():
     assert ai.cosine([1e200, 0], [1e200, 0]) == pytest.approx(1)
+
+
+def test_oversized_integer_vectors_return_controlled_error():
+    with pytest.raises(ai.AIError):
+        ai.cosine([10**400, 1], [1, 0])
+
+
+def test_boolean_embedding_indices_are_rejected(provider, monkeypatch):
+    def malformed(path, payload):
+        response = fake_provider(path, payload)
+        if path == 'embeddings':
+            response['data'][0]['index'] = False
+        return response
+    monkeypatch.setattr(ai, 'post_openai', malformed)
+    response = client.post('/api/ai/analyze', json=body())
+    assert response.status_code == 502
+    assert response.json()['code'] == 'ai_invalid_response'

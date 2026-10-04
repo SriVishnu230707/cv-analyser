@@ -1,13 +1,13 @@
 """Text-based resume improvement checks, separate from job coverage scoring."""
 import re
 
-from backend.services.skill_extractor import ACTION
+from backend.services.evidence_matcher import positive_action
 
 
 def assess_quality(text, sections):
     names = {section['name'] for section in sections}
     lines = [line.strip() for section in sections if section['name'] in {'Projects', 'Experience'} for line in section['text'].splitlines() if line.strip()]
-    action_lines = [line for line in lines if ACTION.search(line)]
+    action_lines = [line for line in lines if positive_action(line)]
     lengthy = [line for line in lines if len(line.split()) > 45]
     checks = []
 

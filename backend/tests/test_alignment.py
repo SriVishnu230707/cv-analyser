@@ -7,6 +7,7 @@ from backend.services.resume_quality import assess_quality
 from backend.services.resume_sections import parse_sections
 from backend.tests.test_phase5 import RESUME, JOB, result, corrections, client
 from scripts.evaluate_alignment import evaluate
+import pytest
 
 
 def test_cross_role_skill_evaluation():
@@ -32,6 +33,14 @@ def test_entry_level_projects_satisfy_example_check():
     assessment = assess_quality(text, parse_sections(text))
     assert assessment['review_count'] == 0
     assert all(check['status'] == 'pass' for check in assessment['checks'])
+
+
+@pytest.mark.parametrize('line', ['Never built Python tools.', 'Learning to develop tools; used Python in a tutorial.', 'No experience with Docker; deployed nothing.'])
+def test_learning_and_negated_action_wording_needs_review(line):
+    text = 'Projects\n' + line
+    assessment = assess_quality(text, parse_sections(text))
+    contribution = next(c for c in assessment['checks'] if c['id'] == 'contribution')
+    assert contribution['status'] == 'review'
 
 
 def test_long_description_and_missing_headings_need_review():
