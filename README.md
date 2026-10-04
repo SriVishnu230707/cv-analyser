@@ -2,9 +2,9 @@
 
 An evidence-based resume-to-job comparison tool. It extracts PDF/DOCX text with local English OCR, structures skills and job requirements for review, calculates explainable job-match estimates, and provides prioritized factual improvement suggestions.
 
-## Run the Phase 6 application
+## Run the Phase 7 application
 
-See [Phase 6 improvement-plan instructions](docs/phase-6.md) and [Phase 4 setup](docs/phase-4.md). The current API uses port 8001 and the frontend uses 5173. Extract and review the resume, confirm job requirement categories, then click **Compare with this role** for scores, evidence, and prioritized improvement suggestions. No cloud model or API key is required.
+See [Phase 7 report-export instructions](docs/phase-7.md) and [Phase 4 setup](docs/phase-4.md). The current API uses port 8001 and the frontend uses 5173. Extract and review the resume, confirm job requirement categories, then click **Compare with this role** for scores, evidence, and prioritized improvement suggestions. Download the reviewed report as PDF or JSON. No cloud model or API key is required.
 
 ## Phase 1 artifacts
 
@@ -19,7 +19,7 @@ Start by reading the requirements, then compare a case's `resume.txt` and `job-d
 
 ## Further improvements
 
-Possible future work includes report export, broader rule coverage, optional semantic evidence proposals, and more extensive source-grounded rewrites. Current suggestions preserve documented facts and do not edit resumes automatically.
+Possible future work includes broader rule coverage, optional semantic evidence proposals, and more extensive source-grounded rewrites. Current suggestions preserve documented facts and do not edit resumes automatically.
 
 See the [Phase 5 design](docs/phase-5-design.md) and [implementation notes](docs/phase-5.md) for matching rules, score calculation, API/report changes, UI flow, and evaluation results.
 

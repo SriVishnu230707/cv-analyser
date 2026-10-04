@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ArrowRight, LoaderCircle } from 'lucide-react';
 import type { ComparisonReport, EvidenceDecision, PreparedResume } from './types';
 import { categoryNames } from './StructuredProfile';
@@ -15,6 +15,11 @@ export function ComparisonPanel({ profile, context }: Props) {
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
   const [filter, setFilter] = useState('all');
+  const [exporting, setExporting] = useState<'pdf' | 'json' | null>(null);
+  const [exportError, setExportError] = useState('');
+  const [downloadStatus, setDownloadStatus] = useState('');
+  const exportController = useRef<AbortController | null>(null);
+  useEffect(() => () => exportController.current?.abort(), []);
   useEffect(() => {
     const controller = new AbortController();
     fetch('/api/skills', { signal: controller.signal }).then(async response => {
@@ -23,11 +28,35 @@ export function ComparisonPanel({ profile, context }: Props) {
     }).catch(error => { if (!controller.signal.aborted) setError(error instanceof Error ? error.message : 'Cannot reach the server.'); });
     return () => controller.abort();
   }, []);
+  function requestBody(nextDecisions = decisions) {
+    return { resume_text: profile.resume_text, job_description: profile.job_description, requirements_confirmed: true, category_corrections: profile.job_requirements.map(item => ({ requirement_id: item.id, category: item.category })), skill_mappings: Object.entries(mappings).filter(([, value]) => value).map(([id, value]) => ({ requirement_id: id, canonical_skill: value })), evidence_decisions: nextDecisions, extraction_context: context };
+  }
+  async function download(format: 'pdf' | 'json') {
+    if (busy || !report) return;
+    setBusy(true); setExporting(format); setExportError(''); setDownloadStatus('');
+    const controller = new AbortController();
+    exportController.current = controller;
+    try {
+      const response = await fetch('/api/report/export', { method: 'POST', signal: AbortSignal.any([controller.signal, AbortSignal.timeout(60000)]), headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...requestBody(), format }) });
+      if (!response.ok) {
+        const body = await response.json(); throw new Error(body.message ?? 'The report could not be prepared. Please try again.');
+      }
+      const url = URL.createObjectURL(await response.blob());
+      if (controller.signal.aborted) { URL.revokeObjectURL(url); return; }
+      const anchor = document.createElement('a');
+      anchor.href = url;
+      anchor.download = /filename="(cv-analysis-[a-f0-9]{8}\.(?:pdf|json))"/.exec(response.headers.get('Content-Disposition') ?? '')?.[1] ?? `cv-analysis-${report.analysis_id.slice(0, 8)}.${format}`;
+      document.body.appendChild(anchor); anchor.click(); anchor.remove();
+      window.setTimeout(() => URL.revokeObjectURL(url), 60000);
+      setDownloadStatus(`${format.toUpperCase()} report prepared for download.`);
+    } catch (error) { if (!controller.signal.aborted) setExportError(error instanceof Error ? error.message : 'Cannot prepare the report. Please try again.'); }
+    finally { setBusy(false); setExporting(null); }
+  }
   async function compare(nextDecisions = decisions) {
     if (busy) return;
-    setBusy(true); setError('');
+    setBusy(true); setError(''); setExportError(''); setDownloadStatus('');
     try {
-      const response = await fetch('/api/compare', { method: 'POST', signal: AbortSignal.timeout(60000), headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ resume_text: profile.resume_text, job_description: profile.job_description, requirements_confirmed: true, category_corrections: profile.job_requirements.map(item => ({ requirement_id: item.id, category: item.category })), skill_mappings: Object.entries(mappings).filter(([, value]) => value).map(([id, value]) => ({ requirement_id: id, canonical_skill: value })), evidence_decisions: nextDecisions, extraction_context: context }) });
+      const response = await fetch('/api/compare', { method: 'POST', signal: AbortSignal.timeout(60000), headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(requestBody(nextDecisions)) });
       const body = await response.json();
       if (!response.ok) throw new Error(body.message ?? 'Comparison failed. Please try again.');
       setReport(body); setDecisions(nextDecisions);
@@ -43,10 +72,11 @@ export function ComparisonPanel({ profile, context }: Props) {
     <div className="section-heading"><div><span className="eyebrow">04 · CONNECT THE EVIDENCE</span><h2 id="comparison-title">How your resume fits this role</h2></div></div>
     <div className="card"><p className="muted">Compare the confirmed requirements with your reviewed text. Skill mentions describe evidence, not verified proficiency.</p>
       <details className="mapping-controls"><summary>Map an unfamiliar skill name (optional)</summary><p>Only map genuine aliases. You can instead change an unknown requirement to informational or excluded above.</p>{profile.job_requirements.filter(item => ['required_skill', 'preferred_skill'].includes(item.category)).map(item => <label key={item.id}>{item.name}<select aria-label={'Map ' + item.name} disabled={busy} value={mappings[item.id] ?? ''} onChange={event => { setMappings(previous => ({ ...previous, [item.id]: event.target.value })); setReport(null); setDecisions([]); }}><option value="">Use detected canonical skill</option>{catalog.map(name => <option key={name} value={name}>{name}</option>)}</select></label>)}</details>
-      <button className="analyze-button compare-button" disabled={busy} onClick={() => void compare()}>{busy ? <><LoaderCircle className="spin" size={18} />Comparing evidence…</> : <>Compare with this role<ArrowRight size={18} /></>}</button>
+      <button className="analyze-button compare-button" disabled={busy} onClick={() => void compare()}>{busy ? <><LoaderCircle className="spin" size={18} />{exporting ? 'Preparing report…' : 'Comparing evidence…'}</> : <>Compare with this role<ArrowRight size={18} /></>}</button>
       {error ? <div className="error" role="alert">{error}</div> : null}
     </div>
     {report ? <div className="comparison-report">
+      <div className="card report-downloads"><div><h3>Save your report</h3><p>Download scores, reviewed evidence, and your improvement plan. JSON also includes the reviewed resume sections.</p></div><div className="download-buttons"><button type="button" disabled={busy} onClick={() => void download('pdf')}>{exporting === 'pdf' ? 'Preparing PDF...' : 'Download PDF'}</button><button type="button" disabled={busy} onClick={() => void download('json')}>{exporting === 'json' ? 'Preparing JSON...' : 'Download JSON'}</button></div>{exportError ? <div className="error" role="alert">{exportError}</div> : null}<p className="download-status" role="status" aria-live="polite">{downloadStatus}</p></div>
       <div className="match-summary card" role="status"><div><span className="eyebrow">ESTIMATED JOB MATCH</span><strong>{report.scores.overall === null ? 'Not scored' : report.scores.overall.toFixed(1) + '%'}</strong></div><p>{report.scores.overall === null ? 'No scored requirements apply. Add and review explicit skills or responsibilities.' : 'An application estimate based on documented evidence. This is not an employer ATS result or a hiring probability.'}<br />{report.informational_requirement_count} informational or excluded requirements · {pending.size} requirements with possible evidence</p></div>
       <div className="score-grid">{Object.entries(report.scores.components).map(([key, value]) => <div className="card score-card" key={key}><h3>{componentNames[key]}</h3><strong>{value.score === null ? 'Not applicable' : value.score.toFixed(1) + '%'}</strong><p>{value.credited_weight} / {value.total_weight} requirement weight credited</p><p>{(100 * value.effective_weight).toFixed(1)}% of the overall score</p></div>)}</div>
       <div className="card requirement-report"><div className="card-title"><h3>Requirement evidence</h3></div><label htmlFor="report-filter">Show requirements</label><select id="report-filter" value={filter} onChange={event => setFilter(event.target.value)}><option value="all">All</option><option value="evidenced">Evidenced</option><option value="review">Needs review</option><option value="missing">Not evidenced</option></select>

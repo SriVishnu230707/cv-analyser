@@ -1,4 +1,4 @@
-"""Phase 6: reviewed matching, explainable scores, and factual suggestions."""
+"""Phase 7: reviewed matching, suggestions, and downloadable reports."""
 from pathlib import Path
 from typing import Literal
 
@@ -13,11 +13,12 @@ from backend.services.structured_profile import prepare_profile
 from backend.services.analysis_service import compare
 from backend.services.extraction_context import sign_context
 from backend.services.skill_extractor import CATALOG
+from backend.services.report_export import pdf_report
 import json
 
 ROOT = Path(__file__).resolve().parents[1]
 MAX_FILE_BYTES = 5 * 1024 * 1024
-app = FastAPI(title="CV Analyser", version="0.6.0", description="Extract resumes and compare reviewed evidence with job requirements.")
+app = FastAPI(title="CV Analyser", version="0.7.0", description="Extract resumes and compare reviewed evidence with job requirements.")
 
 
 def error(code: str, message: str, field: str, status: int = 422):
@@ -38,7 +39,7 @@ async def processing_error(_request: Request, _exc: Exception):
 
 @app.get("/health")
 def health():
-    return {"status": "ok", "phase": 6, "analysis_mode": "evidence_based", "ocr_available": tessdata_path() is not None}
+    return {"status": "ok", "phase": 7, "analysis_mode": "evidence_based", "ocr_available": tessdata_path() is not None}
 
 
 @app.get("/api/demo/job")
@@ -146,8 +147,7 @@ def skill_catalog():
     return json.loads(CATALOG.read_text(encoding='utf-8'))
 
 
-@app.post('/api/compare')
-def compare_resume(body: ComparisonInput):
+def prepare_comparison(body: ComparisonInput):
     text, job = normalize_text(body.resume_text), body.job_description.strip()
     try:
         require_useful_text(text)
@@ -158,7 +158,30 @@ def compare_resume(body: ComparisonInput):
         return error(exc.code, exc.message, 'resume_text', exc.status)
     except ValueError as exc:
         return error('invalid_comparison', str(exc), 'review')
-    return JSONResponse(result, headers={'Cache-Control': 'no-store'})
+    return result
+
+
+@app.post('/api/compare')
+def compare_resume(body: ComparisonInput):
+    result = prepare_comparison(body)
+    return result if isinstance(result, JSONResponse) else JSONResponse(result, headers={'Cache-Control': 'no-store'})
+
+
+class ExportInput(ComparisonInput):
+    format: Literal['pdf', 'json']
+
+
+@app.post('/api/report/export')
+def export_report(body: ExportInput):
+    result = prepare_comparison(body)
+    if isinstance(result, JSONResponse):
+        return result
+    try:
+        content = pdf_report(result) if body.format == 'pdf' else json.dumps(result, ensure_ascii=False, indent=2).encode('utf-8')
+    except ValueError as exc:
+        return error('export_too_large', str(exc), 'format')
+    filename = f"cv-analysis-{result['analysis_id'][:8]}.{body.format}"
+    return Response(content, media_type='application/pdf' if body.format == 'pdf' else 'application/json', headers={'Cache-Control': 'no-store', 'Content-Disposition': f'attachment; filename="{filename}"', 'X-Content-Type-Options': 'nosniff'})
 
 
 @app.post("/api/requirements/review")
