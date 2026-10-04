@@ -1,0 +1,117 @@
+{
+  "schema_version": "1.1.0",
+  "analysis_id": "synthetic-fixture",
+  "input_hash": "db8f1d70bece61ab4eef5e89fd204952f9f038bc4b3e814d6cf9b42f6147193b",
+  "scoring_policy_version": "equal-weight-v1",
+  "taxonomy_version": "1.1.0",
+  "rule_version": "1.1.1",
+  "status": "complete",
+  "resume_sections": [
+    {
+      "name": "Projects",
+      "text": "Tracked application events using Python."
+    },
+    {
+      "name": "Education",
+      "text": "Completed an introductory programming course."
+    }
+  ],
+  "requirements": [
+    {
+      "id": "job-9eea8ade72da",
+      "category": "responsibility",
+      "name": "Monitor logs",
+      "source": "Monitor logs.",
+      "sources": [
+        {
+          "text": "Monitor logs.",
+          "line_number": 1
+        }
+      ],
+      "weight": 1,
+      "classification_method": "user",
+      "needs_review": false,
+      "review_reason": "",
+      "canonical_skill": null,
+      "included_in_score": true
+    }
+  ],
+  "matches": [],
+  "possible_evidence": [
+    {
+      "requirement_id": "job-9eea8ade72da",
+      "evidence": {
+        "text": "Tracked application events using Python.",
+        "section": "Projects",
+        "section_index": 0,
+        "start": 0,
+        "end": 40,
+        "id": "evidence-5be87de459ec08df38f5"
+      },
+      "reason": "Action wording found; relevance to this responsibility needs your confirmation.",
+      "decision": "pending"
+    }
+  ],
+  "requirements_not_evidenced": [
+    "job-9eea8ade72da"
+  ],
+  "qualifications": [],
+  "scores": {
+    "overall": 0.0,
+    "components": {
+      "required_skills": {
+        "score": null,
+        "base_weight": 0.6,
+        "effective_weight": 0,
+        "credited_weight": 0,
+        "total_weight": 0
+      },
+      "preferred_skills": {
+        "score": null,
+        "base_weight": 0.15,
+        "effective_weight": 0,
+        "credited_weight": 0,
+        "total_weight": 0
+      },
+      "responsibilities": {
+        "score": 0.0,
+        "base_weight": 0.25,
+        "effective_weight": 1.0,
+        "credited_weight": 0,
+        "total_weight": 1
+      }
+    }
+  },
+  "readability": {
+    "status": "not_assessed",
+    "issues": [
+      "Extraction context was not provided."
+    ]
+  },
+  "suggestions": [
+    {
+      "id": "suggestion-6c065a21b19a7e46",
+      "kind": "evidence_review",
+      "priority": "medium",
+      "requirement_ids": [
+        "job-9eea8ade72da"
+      ],
+      "rationale": "Possible evidence for \u201cMonitor logs\u201d has not been confirmed and earns no credit.",
+      "action": "Review the suggested excerpt. Confirm it only if it actually documents this requirement; otherwise reject it or add a truthful example.",
+      "evidence": null,
+      "rewrite": null
+    }
+  ],
+  "warnings": [
+    "This is an estimated job match, not an employer ATS result or hiring probability.",
+    "Possible evidence earns no credit until confirmed. User confirmation records your interpretation, not independent verification."
+  ],
+  "informational_requirement_count": 0,
+  "ats_assessment": {
+    "score": 0.0,
+    "label": "Estimated ATS alignment",
+    "method": "Reviewed requirement coverage: required skills 60%, preferred skills 15%, responsibilities 25%; absent components are normalized.",
+    "readability_status": "not_assessed",
+    "disclaimer": "This is an application estimate, not an employer ATS result, proficiency assessment, or hiring probability. Readability is reported separately."
+  }
+}

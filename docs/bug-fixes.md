@@ -26,3 +26,11 @@ Responsibility rules previously treated different objects within a task family a
 A successful but malformed `/api/skills` response, such as `{"version":"bad","skills":null}`, could crash the page. The dictionary and comparison mapping controls now share runtime validation of catalog entries and aliases. Invalid data produces a readable error and the dictionary can retry without losing the page.
 
 Follow-up validation: **129 backend tests**, **7 frontend tests**, and the production build passed. Browser checks verified malformed-dictionary recovery and the corrected monitoring requirement workflow.
+
+## Phase 9 follow-up review
+
+- Malformed OpenAI output items or message content could raise an unhandled exception. Explicit envelope/content validation now returns `ai_invalid_response` rather than an internal error. Invalid, zero, boolean, and non-finite embedding vectors also fail cleanly; large finite vectors use stable cosine arithmetic.
+- The substring rewrite guard accepted a fragment such as `50 logs.` from `Monitored 150 logs.`, or a fragment that removed a teammate's subject. Only complete source sentences are now accepted. Metrics and subjects cannot be clipped by selecting part of a sentence.
+- Successful but malformed comparison/AI responses could replace the visible report with invalid data or crash rendering. The frontend now validates the shared report schema with Ajv before updating state, checks AI metadata/context and the current input hash, and keeps the previous report on failure. AI metadata is explicitly defined in the shared contract.
+
+Validation: **156 backend tests**, **10 frontend tests**, and the production build passed. Browser fault injection confirmed that malformed AI and local-comparison responses show errors, preserve the original report, and allow a successful local retry without uncaught browser errors. Provider tests remain controlled; no live OpenAI generation was performed.

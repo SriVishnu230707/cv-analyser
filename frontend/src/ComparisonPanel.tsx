@@ -5,6 +5,7 @@ import { categoryNames } from './StructuredProfile';
 import { ImprovementSuggestions } from './ImprovementSuggestions';
 import { checkedFetch, requestMessage } from './api';
 import { fetchSkillCatalog } from './skillCatalog';
+import { parseAIResponse, parseReport } from './reportValidation';
 
 interface Props { profile: PreparedResume; context: string | null }
 const componentNames: Record<string, string> = { required_skills: 'Required skills', preferred_skills: 'Preferred skills', responsibilities: 'Responsibilities' };
@@ -44,7 +45,7 @@ export function ComparisonPanel({ profile, context }: Props) {
     const controller = new AbortController(); exportController.current = controller;
     try {
       const response = await checkedFetch('/api/ai/analyze', { method: 'POST', signal: controller.signal, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...requestBody(), cloud_consent: true }) });
-      const body = await response.json();
+      const body = parseAIResponse(await response.json(), report.input_hash);
       if (!controller.signal.aborted) { setAiContext(body.ai_context); setReport(body.report); }
     } catch (error) { if (!controller.signal.aborted) setAiError(requestMessage(error)); }
     finally { setBusy(false); setAiBusy(false); }
@@ -72,7 +73,7 @@ export function ComparisonPanel({ profile, context }: Props) {
     setBusy(true); setError(''); setExportError(''); setDownloadStatus('');
     try {
       const response = await checkedFetch('/api/compare', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(requestBody(nextDecisions)) });
-      const body = await response.json();
+      const body = parseReport(await response.json());
       setReport(body); setDecisions(nextDecisions);
     } catch (error) { setError(requestMessage(error)); }
     finally { setBusy(false); }

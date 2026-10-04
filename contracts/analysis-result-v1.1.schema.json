@@ -323,7 +323,45 @@
       "additionalProperties": false
     },
     "ai_analysis": {
-      "type": "object"
+      "type": "object",
+      "required": [
+        "generation_id",
+        "provider",
+        "model",
+        "embedding_model",
+        "discarded_rewrites"
+      ],
+      "properties": {
+        "generation_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "provider": {
+          "type": "string",
+          "minLength": 1
+        },
+        "model": {
+          "type": "string",
+          "minLength": 1
+        },
+        "embedding_model": {
+          "type": "string",
+          "minLength": 1
+        },
+        "discarded_rewrites": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "usage": {
+          "type": "object"
+        },
+        "semantic_threshold": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      },
+      "additionalProperties": false
     }
   },
   "allOf": [
