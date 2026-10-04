@@ -90,7 +90,7 @@ def test_responsibility_is_not_technology_overlap():
 def test_mapping_review_gates_and_empty_score():
     with pytest.raises(ValueError, match='full set'):
         compare(RESUME, JOB, [], [], [])
-    job = 'Required: Svelte. ' + 'We work collaboratively on reliable tools. ' * 3
+    job = 'Required: SolidJS. ' + 'We work collaboratively on reliable tools. ' * 3
     review = corrections(job)
     review[0]['category'] = 'required_skill'
     with pytest.raises(ValueError, match='Map unknown'):

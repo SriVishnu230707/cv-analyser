@@ -10,7 +10,7 @@ from spacy.matcher import PhraseMatcher
 CATALOG = Path(__file__).resolve().parents[1] / "data/skills.json"
 NEGATION = re.compile(r"\b(?:no (?:experience|knowledge|exposure)(?:\s+(?:with|in|of|to))?|(?:not|never) (?:used|worked with|experienced in|familiar with)|haven't used|don't know|without (?:experience|knowledge)(?:\s+(?:of|in|with))?|lack(?:ing)? (?:experience|knowledge)(?:\s+(?:with|of|in))?)\b", re.I)
 LEARNING = re.compile(r"\b(?:learning|studying|plan(?:ning)? to learn|want to learn)\b", re.I)
-ACTION = re.compile(r"\b(?:built|developed|implemented|used|deployed|maintained|queried|tested|designed|created|integrated|packaged|styled|tracked|automated|optimized)\b", re.I)
+ACTION = re.compile(r"\b(?:built|developed|implemented|used|deployed|maintained|queried|tested|designed|created|integrated|packaged|styled|tracked|automated|optimized|optimised|monitored)\b", re.I)
 
 
 @lru_cache(maxsize=1)

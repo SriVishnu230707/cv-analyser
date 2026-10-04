@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0",
+  "version": "1.1.0",
   "skills": [
     {"name": "Python", "aliases": ["python"]},
     {"name": "JavaScript", "aliases": ["javascript", "js"]},
@@ -51,6 +51,26 @@
     {"name": "Machine Learning", "aliases": ["machine learning"]},
     {"name": "NLP", "aliases": ["nlp", "natural language processing"]},
     {"name": "TensorFlow", "aliases": ["tensorflow"]},
-    {"name": "PyTorch", "aliases": ["pytorch"]}
+    {"name": "PyTorch", "aliases": ["pytorch"]},
+    {"name": "Svelte", "aliases": ["svelte"]},
+    {"name": "SvelteKit", "aliases": ["sveltekit"]},
+    {"name": "NestJS", "aliases": ["nestjs", "nest.js"]},
+    {"name": ".NET", "aliases": [".net", "dotnet"]},
+    {"name": "ASP.NET Core", "aliases": ["asp.net core"]},
+    {"name": "SQLAlchemy", "aliases": ["sqlalchemy"]},
+    {"name": "Celery", "aliases": ["celery"]},
+    {"name": "RabbitMQ", "aliases": ["rabbitmq"]},
+    {"name": "Apache Kafka", "aliases": ["apache kafka", "kafka"]},
+    {"name": "Elasticsearch", "aliases": ["elasticsearch"]},
+    {"name": "OpenSearch", "aliases": ["opensearch"]},
+    {"name": "Ansible", "aliases": ["ansible"]},
+    {"name": "Jenkins", "aliases": ["jenkins"]},
+    {"name": "Prometheus", "aliases": ["prometheus"]},
+    {"name": "Grafana", "aliases": ["grafana"]},
+    {"name": "Apache Spark", "aliases": ["apache spark", "pyspark"]},
+    {"name": "Apache Airflow", "aliases": ["apache airflow", "airflow"]},
+    {"name": "scikit-learn", "aliases": ["scikit-learn", "sklearn"]},
+    {"name": "Hugging Face Transformers", "aliases": ["hugging face transformers"]},
+    {"name": "Power BI", "aliases": ["power bi", "powerbi"]}
   ]
 }

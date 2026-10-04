@@ -6,6 +6,7 @@ import { StructuredProfile } from './StructuredProfile';
 import { ComparisonPanel } from './ComparisonPanel';
 import type { ExtractionResult, PreparedResume, RequirementCategory } from './types';
 import { checkedFetch, requestMessage } from './api';
+import { SkillDictionary } from './SkillDictionary';
 
 const MAX_BYTES = 5 * 1024 * 1024;
 export default function App() {
@@ -87,10 +88,11 @@ export default function App() {
     finally { setBusy(null); }
   }
   return <>
-    <header className="topbar"><a className="brand" href="#"><span className="brand-mark"><Leaf size={22} /></span>cv<span className="brand-light">analyser</span><span className="brand-dot">.</span></a><div className="header-right"><span className="header-label">A clearer path to your next role</span><span className="phase-badge">Phase 7 · Downloadable reports</span></div></header>
+    <header className="topbar"><a className="brand" href="#"><span className="brand-mark"><Leaf size={22} /></span>cv<span className="brand-light">analyser</span><span className="brand-dot">.</span></a><div className="header-right"><span className="header-label">A clearer path to your next role</span><span className="phase-badge">Phase 8 · Broader matching</span></div></header>
     <main>
       <section className="hero"><div className="eyebrow"><span className="tiny-star">✦</span> MAKE YOUR EXPERIENCE COUNT</div><h1>Your next opportunity.<br /><span>A stronger first impression.</span></h1><p>Start with the words behind your experience.<br className="desktop-break" /> Extract your resume, check the details, and review the skills a role needs.</p><div className="hero-points"><span><Check size={15} /> PDF &amp; DOCX</span><span><Check size={15} /> Local English OCR</span><span><Check size={15} /> Editable text preview</span></div></section>
       <div className="demo-banner"><ScanLine size={19} /><p><strong>Your improvement plan is live.</strong> Review your text and job requirements, then compare evidence and get prioritized, factual suggestions.</p></div>
+      <SkillDictionary />
       <div className="workspace">
         <section className="input-card" aria-labelledby="form-title"><div className="section-heading"><div><span className="eyebrow">START WITH THE BASICS</span><h2 id="form-title">Resume meets opportunity</h2></div><span className="step-badge">01 / 03</span></div>
           <form onSubmit={extract}>

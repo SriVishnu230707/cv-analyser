@@ -11,6 +11,7 @@ for folder in ('nlp', 'backend'):
     if path.is_dir():
         sys.path.insert(0, str(path))
 from backend.services.analysis_service import compare
+from backend.services.evidence_matcher import rules
 from backend.services.job_parser import extract_job_requirements
 
 parser = argparse.ArgumentParser()
@@ -37,4 +38,4 @@ for case in manifest['cases']:
         counts[key] += local[key]
     cases.append({'case_id': case['case_id'], **local})
 tp, fp, fn = counts.values()
-print(json.dumps({'split': args.split, 'rule_version': '1.0.0', 'scoring_policy': 'equal-weight-v1', 'counts': counts, 'precision': tp / (tp + fp) if tp + fp else None, 'recall': tp / (tp + fn) if tp + fn else None, 'cases': cases, 'limits': 'Small authored synthetic dataset. Automatic skill matches only; no responsibility accuracy or real-world accuracy claim. Unclassified extra skill mentions are excluded as a fixed review policy.'}, indent=2))
+print(json.dumps({'split': args.split, 'rule_version': rules()['version'], 'scoring_policy': 'equal-weight-v1', 'counts': counts, 'precision': tp / (tp + fp) if tp + fp else None, 'recall': tp / (tp + fn) if tp + fn else None, 'cases': cases, 'limits': 'Small authored synthetic dataset. Automatic skill matches only; no responsibility accuracy or real-world accuracy claim. Unclassified extra skill mentions are excluded as a fixed review policy.'}, indent=2))

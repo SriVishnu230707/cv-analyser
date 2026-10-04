@@ -15,7 +15,7 @@ REQUIRED = re.compile(r"\b(?:required|mandatory|must|essential|minimum|need(?:ed
 PREFERRED = re.compile(r"\b(?:preferred|preferably|desirable|optional|bonus|nice[- ]to[- ]have|a plus)\b", re.I)
 QUALIFICATION = re.compile(r"\b(?:degree|bachelor'?s?|master'?s?|doctorate|phd|certification|certified|diploma)\b", re.I)
 EXPERIENCE = re.compile(r"\b\d+(?:\s*[-–]\s*\d+)?\s*\+?\s*(?:years?|yrs?)\b", re.I)
-RESPONSIBILITY = re.compile(r"^(?:(?:you (?:will|would)|you'll|responsibilities?)\s*[:\-]?\s*)?(?:build|develop|design|maintain|implement|collaborate|write|test|deploy|manage|optimi[sz]e|create|support|monitor|query|style|track|deliver|work)\b", re.I)
+RESPONSIBILITY = re.compile(r"^(?:(?:you (?:will|would)|you'll|responsibilities?)\s*[:\-]?\s*)?(?:build|develop|design|maintain|implement|collaborate|write|test|deploy|manage|optimi[sz]e|automate|create|support|monitor|query|style|track|deliver|work)\b", re.I)
 NOT_REQUIRED = re.compile(r"\b(?:not|isn't) (?:required|needed|necessary)\b|\bno (?:degree|certification) (?:is )?required\b", re.I)
 
 

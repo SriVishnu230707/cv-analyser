@@ -22,7 +22,7 @@ def test_aliases_and_distinct_languages():
     assert [item['name'] for item in skill_mentions('AngularJS and Angular')] == ['AngularJS', 'Angular']
 
 
-@pytest.mark.parametrize('text', ['JavaScript', 'myPythonTool', 'Pythonista', 'SQLAlchemy', 'Go to the office', 'express your ideas'])
+@pytest.mark.parametrize('text', ['JavaScript', 'myPythonTool', 'Pythonista', 'Go to the office', 'express your ideas'])
 def test_no_embedded_or_ambiguous_aliases(text):
     names = {item['name'] for item in skill_mentions(text)}
     if text == 'JavaScript':
@@ -85,9 +85,9 @@ def test_duplicates_keep_sources_and_conflicts_need_review():
 
 
 def test_unknown_requirement_is_preserved_and_benefits_ignored():
-    result = extract_job_requirements('Svelte required.\nBenefits:\nPython workshops available.')
+    result = extract_job_requirements('SolidJS required.\nBenefits:\nPython workshops available.')
     assert len(result['requirements']) == 1
-    assert result['requirements'][0]['name'] == 'Svelte required'
+    assert result['requirements'][0]['name'] == 'SolidJS required'
     assert result['requirements'][0]['category'] == 'other_requirement'
     assert result['requirements'][0]['needs_review']
 
