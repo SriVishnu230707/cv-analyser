@@ -5,7 +5,7 @@ from typing import Literal
 from fastapi import FastAPI, File, Form, Request, UploadFile
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse, Response
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 from backend.services.document_parser import ExtractionError, MAX_TEXT_CHARS, require_useful_text, tessdata_path
 from backend.services.extraction_runner import run_extraction
 from backend.services.resume_sections import normalize_text
@@ -143,6 +143,13 @@ class ComparisonInput(PreviewInput):
     extraction_context: str | None = Field(default=None, max_length=20000)
     ai_context: str | None = Field(default=None, max_length=200000)
 
+    @field_validator('requirements_confirmed', mode='before')
+    @classmethod
+    def explicit_confirmation(cls, value):
+        if value is not True:
+            raise ValueError('Confirm requirements with the boolean true.')
+        return value
+
 
 @app.get('/api/skills')
 def skill_catalog():
@@ -176,6 +183,13 @@ def ai_status():
 
 class AIInput(ComparisonInput):
     cloud_consent: Literal[True]
+
+    @field_validator('cloud_consent', mode='before')
+    @classmethod
+    def explicit_cloud_consent(cls, value):
+        if value is not True:
+            raise ValueError('Cloud consent must be the boolean true.')
+        return value
 
 
 @app.post('/api/ai/analyze')

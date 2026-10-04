@@ -19,6 +19,8 @@ Start by reading the requirements, then compare a case's `resume.txt` and `job-d
 
 ## Further improvements
 
+See [verification and release checks](docs/verification.md) for the CI workflow and opt-in live OpenAI verification command.
+
 Possible future work includes evaluation of semantic proposal quality on a fresh held-out dataset and richer rewrites with stronger factual verification. Current AI wording suggestions are source excerpts and never edit resumes automatically.
 
 See the [bug-fix review and regression checks](docs/bug-fixes.md) for corrected matching edge cases and frontend error handling. Run `npm test` inside `frontend` for request-error regressions.

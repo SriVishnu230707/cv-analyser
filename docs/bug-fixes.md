@@ -43,3 +43,13 @@ Validation: **156 backend tests**, **10 frontend tests**, and the production bui
 - API health and frontend/backend version metadata now consistently identify Phase 10 / version 0.10.0.
 
 Validation: **166 backend tests**, **15 frontend tests**, and the production build passed. Browser fault injection verified malformed extraction, preparation, and requirement-review responses show controlled errors, preserve usable state, and allow retries through a valid comparison at 57.5%, without uncaught browser errors. No live OpenAI calls were made. Passing these checks does not establish universal accuracy or prove the absence of all bugs.
+
+## Qualification and release verification review
+
+Degree matching could combine a bachelor's computer-science subject with a master's literature credential on the same line. Degree type and subject must now refer to one credential in one clause; mixed credentials do not receive automatic credit. A completed degree can still match when an unrelated incomplete credential appears in a separate clause.
+
+Pydantic's literal-true handling accepted numeric `1` as confirmation. Requirement confirmation and cloud consent now require the actual JSON boolean `true`. Invalid confirmations fail before provider calls.
+
+Added a GitHub Actions workflow for backend/frontend tests, the synthetic skill evaluation, and the production build. Added `scripts/verify_live_ai.py` for explicit synthetic live verification through a local backend, including signed-context JSON/PDF exports and unchanged scores before semantic confirmation. No paid call runs without `--run-live`; missing configuration is never reported as a pass.
+
+Validation: **188 backend tests passed**. The verification command reported the current missing-key limitation without making a cloud call. Its complete flow passed with the controlled provider in regression tests. Frontend source is unchanged from the previous passing 15-test/build/browser verification. The new hosted CI workflow has not yet been verified on GitHub.

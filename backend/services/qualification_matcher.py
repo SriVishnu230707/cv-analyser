@@ -20,7 +20,20 @@ def qualification_findings(sections, requirements, input_hash):
             degree_type = degree.group().casefold()
             degree_pattern = r"\bbachelor'?s?\b" if degree_type.startswith('bachelor') else r"\bmaster'?s?\b" if degree_type.startswith('master') else r'\b(?:phd|doctorate)\b'
             unfinished = r'\b(?:no|not|incomplete|unfinished|pursuing|expected|studying|candidate|in progress|working (?:toward|towards|on))\b'
-            evidence = next((line for line in lines if line['section'] == 'Education' and re.search(degree_pattern, line['text'], re.I) and re.search(r'\b' + re.escape(field.group()) + r'\b', line['text'], re.I) and not re.search(unfinished, line['text'], re.I)), None)
+            def documents_degree(line):
+                if line['section'] != 'Education':
+                    return False
+                # Type and subject must describe one credential in one clause.
+                # Mixed credentials need review rather than borrowing another degree's subject.
+                clauses = re.split(r'[;!?]|\.(?=\s|$)|\b(?:but|however)\b', line['text'], flags=re.I)
+                for clause in clauses:
+                    types = re.findall(r"\b(?:bachelor'?s?|master'?s?|phd|doctorate)\b", clause, re.I)
+                    subjects = re.findall(r'\b(?:computer science|software engineering|information technology)\b', clause, re.I)
+                    if len(types) == len(subjects) == 1 and re.search(degree_pattern, clause, re.I) and re.search(r'\b' + re.escape(field.group()) + r'\b', clause, re.I) and not re.search(unfinished, clause, re.I):
+                        return True
+                return False
+
+            evidence = next((line for line in lines if documents_degree(line)), None)
             status = 'met' if evidence else 'not_evidenced'
             reason = 'Explicit degree and subject wording found.' if evidence else 'No completed degree with this explicit type and subject is stated.'
         results.append({'requirement_id': requirement['id'], 'status': status, 'reason': reason, 'evidence': identify(evidence, requirement['id'], input_hash) if evidence else None})
