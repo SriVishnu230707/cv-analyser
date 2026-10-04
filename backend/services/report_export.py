@@ -38,9 +38,11 @@ def excerpt(evidence):
 def report_html(report):
     parts = ['<h1>CV Analyser</h1>', paragraph('Reviewed job-match report', 'meta'), paragraph(f"Analysis ID: {report['analysis_id']}", 'meta')]
     overall = report['scores']['overall']
-    parts += [paragraph('Estimated job match'), paragraph(f'{overall:.1f}%' if overall is not None else 'Not scored', 'score')]
+    parts += [paragraph('Estimated ATS alignment / job match'), paragraph(f'{overall:.1f}%' if overall is not None else 'Not scored', 'score')]
     parts += [paragraph('An application estimate, not an employer ATS result or hiring probability. Skill evidence does not verify proficiency.')]
     parts += [paragraph(f"Policy: {report['scoring_policy_version']} | Dictionary: {report['taxonomy_version']} | Rules: {report['rule_version']}", 'meta')]
+    if report.get('ai_analysis'):
+        parts.append(paragraph(f"AI advice: {report['ai_analysis']['model']} | Semantic proposals: {report['ai_analysis']['embedding_model']} | Generation: {report['ai_analysis']['generation_id']}", 'meta'))
     parts.append('<table><tr><th>Component</th><th>Coverage</th><th>Credited / total</th><th>Effective weight</th></tr>')
     for name, component in report['scores']['components'].items():
         coverage = f"{component['score']:.1f}%" if component['score'] is not None else 'Not applicable'

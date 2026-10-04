@@ -293,6 +293,37 @@
           }
         }
       }
+    },
+    "ats_assessment": {
+      "type": "object",
+      "required": [
+        "score",
+        "label",
+        "method",
+        "readability_status",
+        "disclaimer"
+      ],
+      "properties": {
+        "score": {
+          "$ref": "#/$defs/score"
+        },
+        "label": {
+          "type": "string"
+        },
+        "method": {
+          "type": "string"
+        },
+        "readability_status": {
+          "type": "string"
+        },
+        "disclaimer": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "ai_analysis": {
+      "type": "object"
     }
   },
   "allOf": [

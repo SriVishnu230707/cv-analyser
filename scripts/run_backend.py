@@ -11,6 +11,8 @@ for folder in ("nlp", "backend"):
         sys.path.insert(0, str(local_dependencies))
 
 if __name__ == "__main__":
+    from dotenv import load_dotenv
+    load_dotenv(root / ".env")
     import uvicorn
     parser = argparse.ArgumentParser(description="Run the local CV Analyser API")
     parser.add_argument("--port", type=int, default=8000)

@@ -1,4 +1,4 @@
-"""Phase 8: broader local skill and responsibility coverage."""
+"""Phase 9: ATS alignment, NLP matching, and OpenAI enrichment."""
 from pathlib import Path
 from typing import Literal
 
@@ -14,11 +14,12 @@ from backend.services.analysis_service import compare
 from backend.services.extraction_context import sign_context
 from backend.services.skill_extractor import CATALOG
 from backend.services.report_export import pdf_report
+from backend.services.ai_enrichment import configuration, enrich, AIError
 import json
 
 ROOT = Path(__file__).resolve().parents[1]
 MAX_FILE_BYTES = 5 * 1024 * 1024
-app = FastAPI(title="CV Analyser", version="0.8.0", description="Extract resumes and compare reviewed evidence with job requirements.")
+app = FastAPI(title="CV Analyser", version="0.9.0", description="Extract resumes and compare reviewed evidence with job requirements.")
 
 
 def error(code: str, message: str, field: str, status: int = 422):
@@ -39,7 +40,7 @@ async def processing_error(_request: Request, _exc: Exception):
 
 @app.get("/health")
 def health():
-    return {"status": "ok", "phase": 8, "analysis_mode": "evidence_based", "ocr_available": tessdata_path() is not None}
+    return {"status": "ok", "phase": 9, "analysis_mode": "evidence_based", "ocr_available": tessdata_path() is not None}
 
 
 @app.get("/api/demo/job")
@@ -140,6 +141,7 @@ class ComparisonInput(PreviewInput):
     skill_mappings: list[SkillMapping] = Field(default_factory=list, max_length=500)
     evidence_decisions: list[EvidenceDecision] = Field(default_factory=list, max_length=500)
     extraction_context: str | None = Field(default=None, max_length=20000)
+    ai_context: str | None = Field(default=None, max_length=200000)
 
 
 @app.get('/api/skills')
@@ -153,7 +155,7 @@ def prepare_comparison(body: ComparisonInput):
         require_useful_text(text)
         if len(job) < 100:
             return error('invalid_job_description', 'Enter at least 100 characters of job description.', 'job_description')
-        result = compare(text, job, [c.model_dump() for c in body.category_corrections], [m.model_dump() for m in body.skill_mappings], [d.model_dump() for d in body.evidence_decisions], body.extraction_context)
+        result = compare(text, job, [c.model_dump() for c in body.category_corrections], [m.model_dump() for m in body.skill_mappings], [d.model_dump() for d in body.evidence_decisions], body.extraction_context, body.ai_context)
     except ExtractionError as exc:
         return error(exc.code, exc.message, 'resume_text', exc.status)
     except ValueError as exc:
@@ -165,6 +167,32 @@ def prepare_comparison(body: ComparisonInput):
 def compare_resume(body: ComparisonInput):
     result = prepare_comparison(body)
     return result if isinstance(result, JSONResponse) else JSONResponse(result, headers={'Cache-Control': 'no-store'})
+
+
+@app.get('/api/ai/status')
+def ai_status():
+    return JSONResponse(configuration(), headers={'Cache-Control': 'no-store'})
+
+
+class AIInput(ComparisonInput):
+    cloud_consent: Literal[True]
+
+
+@app.post('/api/ai/analyze')
+def ai_analyze(body: AIInput):
+    if body.ai_context:
+        return error('already_enhanced', 'Start a fresh comparison before requesting new AI advice.', 'ai_context')
+    report = prepare_comparison(body)
+    if isinstance(report, JSONResponse):
+        return report
+    try:
+        token = enrich(report)
+    except AIError as exc:
+        return error(exc.code, exc.message, 'ai', exc.status)
+    enhanced = prepare_comparison(body.model_copy(update={'ai_context': token}))
+    if isinstance(enhanced, JSONResponse):
+        return enhanced
+    return JSONResponse({'report': enhanced, 'ai_context': token}, headers={'Cache-Control': 'no-store'})
 
 
 class ExportInput(ComparisonInput):

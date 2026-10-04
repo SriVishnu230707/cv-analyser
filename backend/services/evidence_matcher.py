@@ -50,7 +50,7 @@ def rule_match(requirement, text):
     return any(positive_action(clause) and re.search(rule['action'], clause, re.I) and re.search(object_pattern, clause, re.I) and not required_skills - {m['name'] for m in skill_mentions(clause)} for clause in clauses)
 
 
-def match_evidence(profile, requirements, input_hash, decisions):
+def match_evidence(profile, requirements, input_hash, decisions, extra_possible=()):
     lines = list(excerpts(profile['resume_sections']))
     skills = {skill['name']: skill for skill in profile['resume_skills']}
     matches, possible = [], []
@@ -80,6 +80,10 @@ def match_evidence(profile, requirements, input_hash, decisions):
                 # A candidate selects relevance; these excerpts earn zero automatic points.
                 possible.extend({'requirement_id': identifier, 'evidence': identify(line, identifier, input_hash), 'reason': 'Action wording found; relevance to this responsibility needs your confirmation.'} for line in candidates[:8])
     credited = {item['requirement_id'] for item in matches}
+    combined = {}
+    for item in [*extra_possible, *possible]:
+        combined.setdefault((item['requirement_id'], item['evidence']['id']), item)
+    possible = list(combined.values())
     possible = [item for item in possible if item['requirement_id'] not in credited]
     known = {(item['requirement_id'], item['evidence']['id']): item for item in possible}
     seen, accepted = set(), set()
