@@ -20,7 +20,7 @@ test('malformed catalog responses are rejected before rendering', () => {
 
 test('the actual server catalog passes validation', async () => {
   const catalog = JSON.parse(await readFile(new URL('../../backend/data/skills.json', import.meta.url), 'utf8'));
-  assert.equal(parseSkillCatalog(catalog).skills.length, 71);
+  assert.equal(parseSkillCatalog(catalog).skills.length, 128);
 });
 
 test('dictionary fetch recovers after a malformed success response', async () => {

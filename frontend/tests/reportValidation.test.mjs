@@ -21,7 +21,7 @@ test('actual synthetic backend report and AI envelope are accepted', () => {
 });
 
 test('malformed reports are rejected before replacing visible state', () => {
-  for (const value of [null, {}, { ...fixture, scores: null }, { ...fixture, suggestions: [null] }, { ...fixture, possible_evidence: null }, { ...fixture, ai_analysis: {} }]) {
+  for (const value of [null, {}, { ...fixture, scores: null }, { ...fixture, suggestions: [null] }, { ...fixture, possible_evidence: null }, { ...fixture, ai_analysis: {} }, { ...fixture, resume_quality: { checks: [null] } }]) {
     assert.throws(() => parseReport(value), /invalid analysis report/);
   }
 });

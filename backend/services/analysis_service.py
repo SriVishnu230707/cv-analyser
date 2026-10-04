@@ -12,6 +12,7 @@ from backend.services.skill_extractor import CATALOG, skill_mentions
 from backend.services.structured_profile import prepare_profile
 from backend.services.suggestion_engine import build_suggestions
 from backend.services.ai_enrichment import read_context as read_ai_context
+from backend.services.resume_quality import assess_quality
 
 
 def compare(text, job, corrections, mappings, decisions, context=None, ai_context=None):
@@ -57,6 +58,7 @@ def compare(text, job, corrections, mappings, decisions, context=None, ai_contex
     report = {'schema_version': '1.1.0', 'analysis_id': str(uuid4()), 'input_hash': input_hash, 'scoring_policy_version': 'equal-weight-v1', 'taxonomy_version': profile['taxonomy_version'], 'rule_version': rules()['version'], 'status': 'complete' if scores['overall'] is not None else 'insufficient_requirements', 'resume_sections': profile['resume_sections'], 'requirements': requirements, 'matches': matches, 'possible_evidence': possible, 'requirements_not_evidenced': [r['id'] for r in requirements if r['included_in_score'] and r['id'] not in credited], 'qualifications': qualification_findings(profile['resume_sections'], requirements, input_hash), 'scores': scores, 'readability': read_context(context, text), 'suggestions': [], 'warnings': ['This is an estimated job match, not an employer ATS result or hiring probability.', 'Possible evidence earns no credit until confirmed. User confirmation records your interpretation, not independent verification.'], 'informational_requirement_count': sum(not r['included_in_score'] for r in requirements)}
 
     report['suggestions'] = build_suggestions(report, profile)
+    report['resume_quality'] = assess_quality(profile['resume_text'], profile['resume_sections'])
     report['ats_assessment'] = {'score': scores['overall'], 'label': 'Estimated ATS alignment', 'method': 'Reviewed requirement coverage: required skills 60%, preferred skills 15%, responsibilities 25%; absent components are normalized.', 'readability_status': report['readability']['status'], 'disclaimer': 'This is an application estimate, not an employer ATS result, proficiency assessment, or hiring probability. Readability is reported separately.'}
     if enrichment:
         report['ai_analysis'] = enrichment['metadata']

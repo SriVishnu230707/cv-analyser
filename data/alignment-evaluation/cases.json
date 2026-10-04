@@ -1,0 +1,14 @@
+[
+  {"id":"mobile-positive","skills":["Kotlin","Flutter","React Native"],"resume":"Skills\nKotlin, Flutter, React Native","expected":["Kotlin","Flutter","React Native"]},
+  {"id":"mobile-learning","skills":["Swift","Dart","Android SDK"],"resume":"Skills\nLearning Swift and Dart.\nAndroid SDK","expected":["Android SDK"]},
+  {"id":"analytics-positive","skills":["Tableau","Microsoft Excel","BigQuery"],"resume":"Projects\nBuilt dashboards using Tableau and MS Excel.\nQueried Google BigQuery.","expected":["Tableau","Microsoft Excel","BigQuery"]},
+  {"id":"analytics-negated","skills":["Snowflake","dbt","Databricks"],"resume":"Skills\nNo experience with Snowflake or dbt.\nDatabricks","expected":["Databricks"]},
+  {"id":"ml-positive","skills":["XGBoost","OpenCV","MLflow"],"resume":"Projects\nDeveloped a classifier using XGBoost.\nUsed OpenCV for image processing.\nTracked experiments using MLflow.","expected":["XGBoost","OpenCV","MLflow"]},
+  {"id":"ml-distinct","skills":["Keras","Deep Learning","Computer Vision"],"resume":"Skills\nKeras\nProjects\nLearning deep learning.\nNever used computer vision.","expected":["Keras"]},
+  {"id":"design-positive","skills":["Figma","User Research","Usability Testing"],"resume":"Skills\nFigma, user research, usability testing","expected":["Figma","User Research","Usability Testing"]},
+  {"id":"design-near-match","skills":["Adobe Illustrator","Wireframing","Adobe Photoshop"],"resume":"Skills\nIllustratorPro, myWireframingTool\nPhotoshop","expected":["Adobe Photoshop"]},
+  {"id":"security-positive","skills":["Penetration Testing","OWASP","Wireshark"],"resume":"Skills\nPentesting, OWASP, Wireshark","expected":["Penetration Testing","OWASP","Wireshark"]},
+  {"id":"security-negated","skills":["Splunk","OAuth","OpenID Connect"],"resume":"Skills\nSplunk\nProjects\nNever used OAuth or OIDC.","expected":["Splunk"]},
+  {"id":"business-positive","skills":["Salesforce","Financial Modeling","QuickBooks"],"resume":"Skills\nSalesforce, financial modelling, QuickBooks","expected":["Salesforce","Financial Modeling","QuickBooks"]},
+  {"id":"business-learning","skills":["SAP ERP","Google Analytics","Search Engine Optimization"],"resume":"Skills\nLearning SAP ERP.\nGoogle Analytics\nSearch engine optimisation","expected":["Google Analytics","Search Engine Optimization"]}
+]

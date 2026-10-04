@@ -362,6 +362,65 @@
         }
       },
       "additionalProperties": false
+    },
+    "resume_quality": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "version",
+        "review_count",
+        "disclaimer",
+        "checks"
+      ],
+      "properties": {
+        "version": {
+          "type": "string"
+        },
+        "review_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "disclaimer": {
+          "type": "string"
+        },
+        "checks": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "title",
+              "status",
+              "finding",
+              "action"
+            ],
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              },
+              "status": {
+                "enum": [
+                  "pass",
+                  "review"
+                ]
+              },
+              "finding": {
+                "type": "string"
+              },
+              "action": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            }
+          }
+        }
+      }
     }
   },
   "allOf": [

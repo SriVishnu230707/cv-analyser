@@ -2,9 +2,9 @@
 
 An evidence-based resume-to-job comparison tool. It extracts PDF/DOCX text with local English OCR, structures skills and job requirements for review, calculates explainable job-match estimates, and provides prioritized factual improvement suggestions.
 
-## Run the Phase 9 application
+## Run the Phase 10 application
 
-See [Phase 9 AI setup and brief alignment](docs/phase-9.md), [Phase 8 matching coverage](docs/phase-8.md), and [Phase 4 setup](docs/phase-4.md). The API uses port 8001 and the frontend uses 5173. Explore the dictionary of 71 supported skills, review the resume and job categories, then compare for estimated ATS alignment, missing skills, and improvement suggestions. PDF/JSON downloads include reviewed findings. Local analysis needs no key; OpenAI semantic proposals and generative advice require a backend API key and an explicit cloud-analysis action.
+See [Phase 10 matching and resume improvement](docs/phase-10.md), [Phase 9 AI setup](docs/phase-9.md), and [Phase 4 setup](docs/phase-4.md). The API uses port 8001 and the frontend uses 5173. Explore the dictionary of 128 supported skills, review the resume and job categories, then compare for estimated ATS alignment, missing skills, resume quality checks, and improvement suggestions. PDF/JSON downloads include reviewed findings. Local analysis needs no key; OpenAI semantic proposals and generative advice require a backend API key and an explicit cloud-analysis action.
 
 ## Phase 1 artifacts
 

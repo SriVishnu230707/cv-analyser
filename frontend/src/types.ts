@@ -40,6 +40,7 @@ export interface AnalysisReport {
 export interface EvidenceExcerpt { id: string; text: string; section: string; section_index: number; start: number; end: number }
 export interface EvidenceDecision { requirement_id: string; evidence_id: string; decision: 'accept' | 'reject' }
 export interface ComparisonReport {
+  resume_quality?: { version: string; review_count: number; disclaimer: string; checks: { id: string; title: string; status: 'pass' | 'review'; finding: string; action: string | null }[] };
   ats_assessment?: { score: number | null; label: string; method: string; readability_status: string; disclaimer: string };
   ai_analysis?: { generation_id: string; provider: string; model: string; embedding_model: string; discarded_rewrites: number };
   schema_version: '1.1.0'; analysis_id: string; input_hash: string; status: 'complete' | 'insufficient_requirements';

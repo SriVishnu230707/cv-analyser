@@ -74,6 +74,13 @@ def report_html(report):
                 parts += [paragraph(f"Possible evidence - {candidate['decision']} (automatic credit: none)", 'meta'), excerpt(candidate['evidence']), paragraph(candidate['reason'])]
     parts += ['<h2>Readability checks</h2>', paragraph(report['readability']['status'].replace('_', ' '))]
     parts.extend(paragraph(issue) for issue in report['readability']['issues'])
+    if report.get('resume_quality'):
+        parts.append('<h2>Resume quality and editing checks</h2>')
+        parts.append(paragraph(report['resume_quality']['disclaimer']))
+        for check in report['resume_quality']['checks']:
+            parts += [f"<h3>{text(check['title'])} - {check['status']}</h3>", paragraph(check['finding'])]
+            if check['action']:
+                parts.append(paragraph(check['action']))
     parts.append('<h2>Prioritized improvement plan</h2>')
     if not report['suggestions']:
         parts.append(paragraph('No actionable findings were identified by the current rules.'))

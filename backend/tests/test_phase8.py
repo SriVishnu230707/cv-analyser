@@ -8,8 +8,8 @@ from backend.services.skill_extractor import CATALOG, skill_mentions
 
 def test_catalog_aliases_are_unambiguous_and_exactly_traceable():
     catalog = json.loads(CATALOG.read_text(encoding='utf-8'))
-    assert catalog['version'] == '1.1.0'
-    assert len(catalog['skills']) == 71
+    assert catalog['version'] == '1.2.0'
+    assert len(catalog['skills']) == 128
     aliases = [alias.casefold() for skill in catalog['skills'] for alias in skill['aliases']]
     assert len(aliases) == len(set(aliases))
     for skill in catalog['skills']:
@@ -44,7 +44,7 @@ def test_new_tasks_have_verbatim_evidence_and_versioned_rules(task, evidence):
     assert len(automatic) == 1
     assert automatic[0]['evidence']['text'] == evidence
     assert report['rule_version'] == '1.1.1'
-    assert report['taxonomy_version'] == '1.1.0'
+    assert report['taxonomy_version'] == '1.2.0'
     assert report['scores']['overall'] == 100
 
 
@@ -68,7 +68,7 @@ def test_new_task_proposals_preserve_confirmation_gate_and_exports():
     assert response.status_code == 200
     assert response.json()['scores']['overall'] == 100
     assert response.json()['matches'][0]['method'] == 'user_confirmed'
-    assert response.json()['taxonomy_version'] == '1.1.0'
+    assert response.json()['taxonomy_version'] == '1.2.0'
 
 
 def test_rules_are_unique_and_regexes_compile():
