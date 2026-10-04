@@ -48,14 +48,20 @@ def skill_mentions(text: str):
     return sorted(selected, key=lambda item: item["start"])
 
 
-def assertion(text: str, start: int, end: int):
-    # Negation scopes across lists but stops at sentence/clause boundaries and contrast.
+def mention_clause(text: str, start: int, end: int):
+    # Assertions and demonstrated use share the same sentence/clause scope.
     prefix = re.split(r"[;!?]|\.(?=\s|$)|\b(?:but|however|although)\b", text[:start], flags=re.I)[-1]
     suffix = re.split(r"[;!?]|\.(?=\s|$)|\b(?:but|however|although)\b", text[end:], flags=re.I)[0]
+    return prefix, suffix
+
+
+def assertion(text: str, start: int, end: int):
+    # Negation scopes across lists but stops at sentence/clause boundaries and contrast.
+    prefix, suffix = mention_clause(text, start, end)
     negative_prefix = re.sub(r'\bnot only\b', '', prefix, flags=re.I)
     if NEGATION.search(prefix) or re.search(r"\b(?:no|not|never|didn't|don't|cannot|can't)\b", negative_prefix, re.I) or re.match(r"\s+(?:is |experience is )?(?:not|isn't) (?:required|needed|necessary|used|known)\b", suffix, re.I):
         return "negated"
-    if LEARNING.search(prefix):
+    if LEARNING.search(prefix) or re.match(r"\s*[(\-–—:]?\s*(?:(?:currently|still)\s+)?(?:learning|studying)\b", suffix, re.I):
         return "learning"
     return "positive"
 
@@ -66,7 +72,9 @@ def extract_resume_skills(sections: list[dict]):
         for line in section["text"].splitlines():
             for mention in skill_mentions(line):
                 state = assertion(line, mention["start"], mention["end"])
-                level = state if state != "positive" else "listed" if section["name"] == "Skills" else "demonstrated" if section["name"] in {"Experience", "Projects"} and ACTION.search(line) else "mentioned"
+                prefix, suffix = mention_clause(line, mention["start"], mention["end"])
+                demonstrated = section["name"] in {"Experience", "Projects"} and ACTION.search(prefix + mention['matched_text'] + suffix)
+                level = state if state != "positive" else "listed" if section["name"] == "Skills" else "demonstrated" if demonstrated else "mentioned"
                 evidence = {"text": line, "section": section["name"], "matched_text": mention["matched_text"], "start": mention["start"], "end": mention["end"], "assertion": state, "level": level}
                 entry = found.setdefault(mention["name"], {"name": mention["name"], "evidence": []})
                 if evidence not in entry["evidence"]:

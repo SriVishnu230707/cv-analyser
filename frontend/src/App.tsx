@@ -5,22 +5,9 @@ import { ExtractionPreview } from './ExtractionPreview';
 import { StructuredProfile } from './StructuredProfile';
 import { ComparisonPanel } from './ComparisonPanel';
 import type { ExtractionResult, PreparedResume, RequirementCategory } from './types';
+import { checkedFetch, requestMessage } from './api';
 
 const MAX_BYTES = 5 * 1024 * 1024;
-async function checkedFetch(url: string, options?: RequestInit) {
-  const response = await fetch(url, { ...options, signal: AbortSignal.timeout(60000) });
-  if (!response.ok) {
-    let message = 'The server could not complete this request. Please try again.';
-    try { const body = await response.json(); if (typeof body.message === 'string') message = body.message; } catch { /* Proxy errors may not be JSON. */ }
-    throw new Error(message);
-  }
-  return response;
-}
-function requestMessage(error: unknown) {
-  if (error instanceof DOMException && error.name === 'TimeoutError') return 'The request timed out. Try a simpler document or a smaller scan.';
-  if (error instanceof TypeError) return 'Cannot reach the server. Make sure the API is running, then try again.';
-  return error instanceof Error ? error.message : 'Something went wrong. Please try again.';
-}
 export default function App() {
   const [file, setFile] = useState<File | null>(null);
   const [job, setJob] = useState('');

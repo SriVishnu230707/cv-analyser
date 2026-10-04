@@ -21,6 +21,8 @@ Start by reading the requirements, then compare a case's `resume.txt` and `job-d
 
 Possible future work includes broader rule coverage, optional semantic evidence proposals, and more extensive source-grounded rewrites. Current suggestions preserve documented facts and do not edit resumes automatically.
 
+See the [bug-fix review and regression checks](docs/bug-fixes.md) for corrected matching edge cases and frontend error handling. Run `npm test` inside `frontend` for request-error regressions.
+
 See the [Phase 5 design](docs/phase-5-design.md) and [implementation notes](docs/phase-5.md) for matching rules, score calculation, API/report changes, UI flow, and evaluation results.
 
 ## Dataset maintenance

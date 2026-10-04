@@ -3,6 +3,7 @@ import { ArrowRight, LoaderCircle } from 'lucide-react';
 import type { ComparisonReport, EvidenceDecision, PreparedResume } from './types';
 import { categoryNames } from './StructuredProfile';
 import { ImprovementSuggestions } from './ImprovementSuggestions';
+import { checkedFetch, requestMessage } from './api';
 
 interface Props { profile: PreparedResume; context: string | null }
 const componentNames: Record<string, string> = { required_skills: 'Required skills', preferred_skills: 'Preferred skills', responsibilities: 'Responsibilities' };
@@ -22,10 +23,9 @@ export function ComparisonPanel({ profile, context }: Props) {
   useEffect(() => () => exportController.current?.abort(), []);
   useEffect(() => {
     const controller = new AbortController();
-    fetch('/api/skills', { signal: controller.signal }).then(async response => {
-      if (!response.ok) throw new Error('Cannot load the skill dictionary.');
+    checkedFetch('/api/skills', { signal: controller.signal }).then(async response => {
       const body = await response.json(); setCatalog(body.skills.map((item: { name: string }) => item.name));
-    }).catch(error => { if (!controller.signal.aborted) setError(error instanceof Error ? error.message : 'Cannot reach the server.'); });
+    }).catch(error => { if (!controller.signal.aborted) setError(requestMessage(error)); });
     return () => controller.abort();
   }, []);
   function requestBody(nextDecisions = decisions) {
@@ -37,10 +37,7 @@ export function ComparisonPanel({ profile, context }: Props) {
     const controller = new AbortController();
     exportController.current = controller;
     try {
-      const response = await fetch('/api/report/export', { method: 'POST', signal: AbortSignal.any([controller.signal, AbortSignal.timeout(60000)]), headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...requestBody(), format }) });
-      if (!response.ok) {
-        const body = await response.json(); throw new Error(body.message ?? 'The report could not be prepared. Please try again.');
-      }
+      const response = await checkedFetch('/api/report/export', { method: 'POST', signal: controller.signal, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...requestBody(), format }) });
       const url = URL.createObjectURL(await response.blob());
       if (controller.signal.aborted) { URL.revokeObjectURL(url); return; }
       const anchor = document.createElement('a');
@@ -49,18 +46,17 @@ export function ComparisonPanel({ profile, context }: Props) {
       document.body.appendChild(anchor); anchor.click(); anchor.remove();
       window.setTimeout(() => URL.revokeObjectURL(url), 60000);
       setDownloadStatus(`${format.toUpperCase()} report prepared for download.`);
-    } catch (error) { if (!controller.signal.aborted) setExportError(error instanceof Error ? error.message : 'Cannot prepare the report. Please try again.'); }
+    } catch (error) { if (!controller.signal.aborted) setExportError(requestMessage(error)); }
     finally { setBusy(false); setExporting(null); }
   }
   async function compare(nextDecisions = decisions) {
     if (busy) return;
     setBusy(true); setError(''); setExportError(''); setDownloadStatus('');
     try {
-      const response = await fetch('/api/compare', { method: 'POST', signal: AbortSignal.timeout(60000), headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(requestBody(nextDecisions)) });
+      const response = await checkedFetch('/api/compare', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(requestBody(nextDecisions)) });
       const body = await response.json();
-      if (!response.ok) throw new Error(body.message ?? 'Comparison failed. Please try again.');
       setReport(body); setDecisions(nextDecisions);
-    } catch (error) { setError(error instanceof Error ? error.message : 'Cannot reach the server. Please try again.'); }
+    } catch (error) { setError(requestMessage(error)); }
     finally { setBusy(false); }
   }
   function decide(requirementId: string, evidenceId: string, decision: 'accept' | 'reject') {

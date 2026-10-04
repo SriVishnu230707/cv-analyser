@@ -33,14 +33,15 @@ def positive_action(text):
 
 
 def rule_match(requirement, text):
-    if {m['name'] for m in skill_mentions(requirement)} - {m['name'] for m in skill_mentions(text)}:
-        return False
     matched = [rule for rule in rules()['rules'] if re.search(rule['action'], requirement, re.I) and re.search(rule['object'], requirement, re.I)]
     # Multi-task and unknown task wording is always reviewed rather than partially credited.
     if not matched or len(matched) != 1 or re.search(r'\b(?:and|or|also)\b', requirement, re.I):
         return False
     rule = matched[0]
-    return bool(re.search(rule['action'], text, re.I) and re.search(rule['object'], text, re.I))
+    required_skills = {m['name'] for m in skill_mentions(requirement)}
+    # An action and its object/tools must belong to the same assertion.
+    clauses = re.split(r"[;!?]|\.(?=\s|$)|\b(?:but|however|although)\b", text, flags=re.I)
+    return any(positive_action(clause) and re.search(rule['action'], clause, re.I) and re.search(rule['object'], clause, re.I) and not required_skills - {m['name'] for m in skill_mentions(clause)} for clause in clauses)
 
 
 def match_evidence(profile, requirements, input_hash, decisions):

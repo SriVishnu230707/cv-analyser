@@ -17,7 +17,10 @@ def qualification_findings(sections, requirements, input_hash):
         status = 'uncertain'
         reason = 'This requirement needs manual review; equivalence and years of experience are not inferred.'
         if degree and field and not re.search(r'\b(?:equivalent|or|not)\b', name, re.I):
-            evidence = next((line for line in lines if line['section'] == 'Education' and degree.group().casefold() in line['text'].casefold() and field.group().casefold() in line['text'].casefold() and not re.search(r'\b(?:no|not|incomplete|pursuing|expected)\b', line['text'], re.I)), None)
+            degree_type = degree.group().casefold()
+            degree_pattern = r"\bbachelor'?s?\b" if degree_type.startswith('bachelor') else r"\bmaster'?s?\b" if degree_type.startswith('master') else r'\b(?:phd|doctorate)\b'
+            unfinished = r'\b(?:no|not|incomplete|unfinished|pursuing|expected|studying|candidate|in progress|working (?:toward|towards|on))\b'
+            evidence = next((line for line in lines if line['section'] == 'Education' and re.search(degree_pattern, line['text'], re.I) and re.search(r'\b' + re.escape(field.group()) + r'\b', line['text'], re.I) and not re.search(unfinished, line['text'], re.I)), None)
             status = 'met' if evidence else 'not_evidenced'
             reason = 'Explicit degree and subject wording found.' if evidence else 'No completed degree with this explicit type and subject is stated.'
         results.append({'requirement_id': requirement['id'], 'status': status, 'reason': reason, 'evidence': identify(evidence, requirement['id'], input_hash) if evidence else None})
