@@ -6,6 +6,7 @@ import { ImprovementSuggestions } from './ImprovementSuggestions';
 import { checkedFetch, requestMessage } from './api';
 import { fetchSkillCatalog } from './skillCatalog';
 import { parseAIResponse, parseReport } from './reportValidation';
+import { downloadResponse, saveReport } from './mobile';
 
 interface Props { profile: PreparedResume; context: string | null }
 const componentNames: Record<string, string> = { required_skills: 'Required skills', preferred_skills: 'Preferred skills', responsibilities: 'Responsibilities' };
@@ -56,15 +57,11 @@ export function ComparisonPanel({ profile, context }: Props) {
     const controller = new AbortController();
     exportController.current = controller;
     try {
-      const response = await checkedFetch('/api/report/export', { method: 'POST', signal: controller.signal, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...requestBody(), format }) });
-      const url = URL.createObjectURL(await response.blob());
-      if (controller.signal.aborted) { URL.revokeObjectURL(url); return; }
-      const anchor = document.createElement('a');
-      anchor.href = url;
-      anchor.download = /filename="(cv-analysis-[a-f0-9]{8}\.(?:pdf|json))"/.exec(response.headers.get('Content-Disposition') ?? '')?.[1] ?? `cv-analysis-${report.analysis_id.slice(0, 8)}.${format}`;
-      document.body.appendChild(anchor); anchor.click(); anchor.remove();
-      window.setTimeout(() => URL.revokeObjectURL(url), 60000);
-      setDownloadStatus(`${format.toUpperCase()} report prepared for download.`);
+      const response = await downloadResponse('/api/report/export', { method: 'POST', signal: controller.signal, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...requestBody(), format }) });
+      const blob = await response.blob();
+      if (controller.signal.aborted) return;
+      const filename = /filename="(cv-analysis-[a-f0-9]{8}\.(?:pdf|json))"/.exec(response.headers.get('Content-Disposition') ?? '')?.[1] ?? `cv-analysis-${report.analysis_id.slice(0, 8)}.${format}`;
+      setDownloadStatus(await saveReport(blob, filename));
     } catch (error) { if (!controller.signal.aborted) setExportError(requestMessage(error)); }
     finally { setBusy(false); setExporting(null); }
   }

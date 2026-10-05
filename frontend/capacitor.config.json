@@ -1,0 +1,8 @@
+{
+  "appId": "com.cvanalyser.app",
+  "appName": "CV Analyser",
+  "webDir": "dist",
+  "plugins": {
+    "CapacitorHttp": { "enabled": true }
+  }
+}

@@ -1,6 +1,27 @@
+let apiBaseUrl = '';
+let requiresServer = false;
+
+export function normalizeServerUrl(value: string) {
+  let url: URL;
+  try { url = new URL(value.trim()); } catch { throw new Error('Enter a full server address, for example https://api.example.com or http://192.168.0.105:8001.'); }
+  if (!['http:', 'https:'].includes(url.protocol) || url.username || url.password || url.search || url.hash || url.pathname !== '/') throw new Error('Use only the server origin, without credentials, paths, query parameters or fragments.');
+  return url.origin;
+}
+
+export function configureApiServer(value: string, required = false) {
+  apiBaseUrl = value ? normalizeServerUrl(value) : '';
+  requiresServer = required;
+}
+
+export function apiUrl(url: string) {
+  if (requiresServer && !apiBaseUrl && url.startsWith('/')) throw new Error('Connect to your analysis server using Android server settings first.');
+  return url.startsWith('/') ? apiBaseUrl + url : url;
+}
+
 export async function checkedFetch(url: string, options?: RequestInit) {
+  const target = apiUrl(url);
   const timeout = AbortSignal.timeout(60000);
-  const response = await fetch(url, { ...options, signal: options?.signal ? AbortSignal.any([options.signal, timeout]) : timeout });
+  const response = await fetch(target, { ...options, signal: options?.signal ? AbortSignal.any([options.signal, timeout]) : timeout });
   if (!response.ok) {
     let message = 'The server could not complete this request. Please try again.';
     try {

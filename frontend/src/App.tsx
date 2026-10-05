@@ -7,6 +7,8 @@ import { ComparisonPanel } from './ComparisonPanel';
 import type { ExtractionResult, PreparedResume, RequirementCategory } from './types';
 import { checkedFetch, requestMessage } from './api';
 import { SkillDictionary } from './SkillDictionary';
+import { AndroidConnection } from './AndroidConnection';
+import { downloadResponse } from './mobile';
 import { parseDemoJob, parseExtraction, parseProfile } from './workflowValidation';
 
 const MAX_BYTES = 5 * 1024 * 1024;
@@ -43,7 +45,7 @@ export default function App() {
   async function loadExample() {
     setBusy('example'); setError(''); setNotice(''); clearExtraction();
     try {
-      const [jobResponse, fileResponse] = await Promise.all([checkedFetch('/api/demo/job'), checkedFetch('/api/demo/resume')]);
+      const [jobResponse, fileResponse] = await Promise.all([checkedFetch('/api/demo/job'), downloadResponse('/api/demo/resume')]);
       const [jobData, blob] = await Promise.all([jobResponse.json(), fileResponse.blob()]);
       const exampleJob = parseDemoJob(jobData);
       if (!blob.size || blob.size > MAX_BYTES || !(await blob.slice(0, 5).text()).startsWith('%PDF-')) throw new Error('The example resume is invalid. Please retry loading the example.');
@@ -93,6 +95,7 @@ export default function App() {
   return <>
     <header className="topbar"><a className="brand" href="#"><span className="brand-mark"><Leaf size={22} /></span>cv<span className="brand-light">analyser</span><span className="brand-dot">.</span></a><div className="header-right"><span className="header-label">A clearer path to your next role</span><span className="phase-badge">Phase 10 · Resume intelligence</span></div></header>
     <main>
+      <AndroidConnection disabled={busy !== null} />
       <section className="hero"><div className="eyebrow"><span className="tiny-star">✦</span> MAKE YOUR EXPERIENCE COUNT</div><h1>Your next opportunity.<br /><span>A stronger first impression.</span></h1><p>Start with the words behind your experience.<br className="desktop-break" /> Extract your resume, check the details, and review the skills a role needs.</p><div className="hero-points"><span><Check size={15} /> PDF &amp; DOCX</span><span><Check size={15} /> Local English OCR</span><span><Check size={15} /> Editable text preview</span></div></section>
       <div className="demo-banner"><ScanLine size={19} /><p><strong>AI and NLP resume analysis.</strong> Review job requirements, get estimated ATS alignment, find missing skills, and optionally generate OpenAI advice.</p></div>
       <SkillDictionary />

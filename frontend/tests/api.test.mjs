@@ -6,7 +6,26 @@ import ts from 'typescript';
 // Compile only this small module in memory; no extra test dependencies are needed.
 const source = await readFile(new URL('../src/api.ts', import.meta.url), 'utf8');
 const compiled = ts.transpileModule(source, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext } }).outputText;
-const { checkedFetch, requestMessage } = await import('data:text/javascript;base64,' + Buffer.from(compiled).toString('base64'));
+const { checkedFetch, requestMessage, normalizeServerUrl, configureApiServer } = await import('data:text/javascript;base64,' + Buffer.from(compiled).toString('base64'));
+
+test('Android rejects invalid server origins before any resume is sent', () => {
+  for (const value of ['file:///tmp', 'javascript:alert(1)', 'https://user:secret@example.com', 'https://example.com/api', 'https://example.com?token=x', 'https://example.com#secret']) assert.throws(() => normalizeServerUrl(value));
+  assert.equal(normalizeServerUrl(' http://192.168.0.105:8001/ '), 'http://192.168.0.105:8001');
+});
+
+test('Android requires a server and routes upload requests to the saved origin', async () => {
+  const original = globalThis.fetch;
+  try {
+    configureApiServer('', true);
+    await assert.rejects(checkedFetch('/api/extract'), /server settings first/);
+    configureApiServer('http://10.0.2.2:8001', true);
+    let target, body;
+    globalThis.fetch = async (url, options) => { target=url;body=options.body;return new Response('ok'); };
+    const form=new FormData();form.append('resume',new Blob(['%PDF-synthetic']), 'resume.pdf');
+    await checkedFetch('/api/extract', { method:'POST', body:form });
+    assert.equal(target,'http://10.0.2.2:8001/api/extract');assert.equal(body,form);
+  } finally { globalThis.fetch=original; configureApiServer(''); }
+});
 
 test('HTML, empty, and null server errors show an actionable message', async () => {
   const original = globalThis.fetch;

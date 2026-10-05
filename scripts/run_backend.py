@@ -16,5 +16,6 @@ if __name__ == "__main__":
     import uvicorn
     parser = argparse.ArgumentParser(description="Run the local CV Analyser API")
     parser.add_argument("--port", type=int, default=8000)
+    parser.add_argument("--host", default="127.0.0.1", help="Use 0.0.0.0 for same-Wi-Fi Android access")
     args = parser.parse_args()
-    uvicorn.run("backend.main:app", host="127.0.0.1", port=args.port)
+    uvicorn.run("backend.main:app", host=args.host, port=args.port)

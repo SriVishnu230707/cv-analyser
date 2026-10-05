@@ -6,5 +6,9 @@ import './preview.css';
 import './profile.css';
 import './comparison.css';
 import './suggestions.css';
+import './mobile.css';
+import { initializeMobile } from './mobile';
+
+initializeMobile();
 
 ReactDOM.createRoot(document.getElementById('root')!).render(<React.StrictMode><App /></React.StrictMode>);
