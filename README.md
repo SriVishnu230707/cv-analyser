@@ -6,6 +6,8 @@ An evidence-based resume-to-job comparison tool. It extracts PDF/DOCX text with 
 
 An installable Android version is available. See [Android installation, server connection and APK builds](docs/android.md). The APK bundles the interface; the Python analysis API runs on a computer or hosted server.
 
+See the [security review](docs/security-review.md) for access tokens, request limits and regression checks. LAN access requires `CV_API_TOKEN` in the backend `.env` and the same token in the app's server settings.
+
 See [Phase 10 matching and resume improvement](docs/phase-10.md), [Phase 9 AI setup](docs/phase-9.md), and [Phase 4 setup](docs/phase-4.md). The API uses port 8001 and the frontend uses 5173. Explore the dictionary of 128 supported skills, review the resume and job categories, then compare for estimated ATS alignment, missing skills, resume quality checks, and improvement suggestions. PDF/JSON downloads include reviewed findings. Local analysis needs no key; OpenAI semantic proposals and generative advice require a backend API key and an explicit cloud-analysis action.
 
 ## Phase 1 artifacts

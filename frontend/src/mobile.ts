@@ -1,7 +1,7 @@
 import { Capacitor, CapacitorHttp } from '@capacitor/core';
 import { Filesystem, Directory } from '@capacitor/filesystem';
 import { Share } from '@capacitor/share';
-import { apiUrl, checkedFetch, configureApiServer } from './api';
+import { apiHeaders, apiUrl, checkedFetch, configureApiServer } from './api';
 
 export const isAndroidApp = Capacitor.isNativePlatform();
 export const serverStorageKey = 'cv-analyser-server';
@@ -14,15 +14,22 @@ export function initializeMobile() {
   catch { configureApiServer('', true); }
 }
 
+export async function clearCachedReports() {
+  try { await Filesystem.rmdir({ path: 'reports', directory: Directory.Cache, recursive: true }); }
+  catch (error) {
+    if (!(error && typeof error === 'object' && 'code' in error && error.code === 'OS-PLUG-FILE-0008')) throw new Error('Could not clear cached reports. Try again.');
+  }
+}
+
 export async function downloadResponse(url: string, options?: RequestInit): Promise<Response> {
   if (!isAndroidApp) return checkedFetch(url, options);
   options?.signal?.throwIfAborted();
   // Explicit binary response avoids UTF-8 conversion in the patched WebView fetch.
   const result = await CapacitorHttp.request({
     url: apiUrl(url), method: options?.method ?? 'GET',
-    headers: Object.fromEntries(new Headers(options?.headers).entries()),
+    headers: Object.fromEntries(apiHeaders(url, options?.headers).entries()),
     data: typeof options?.body === 'string' ? JSON.parse(options.body) : undefined,
-    responseType: 'arraybuffer', connectTimeout: 10000, readTimeout: 60000,
+    responseType: 'arraybuffer', connectTimeout: 10000, readTimeout: 60000, disableRedirects: true,
   });
   options?.signal?.throwIfAborted();
   if (result.status < 200 || result.status >= 300) throw new Error(typeof result.data?.message === 'string' ? result.data.message : 'The server could not prepare this download. Please try again.');
@@ -33,6 +40,14 @@ export async function downloadResponse(url: string, options?: RequestInit): Prom
 }
 
 export async function saveReport(blob: Blob, filename: string) {
+  if (!/^cv-analysis-[a-f0-9]{8}\.(pdf|json)$/.test(filename)) throw new Error('Invalid report filename.');
+  if (blob.size > 10 * 1024 * 1024) throw new Error('The report is too large to save.');
+  if (filename.endsWith('.pdf')) {
+    if (!blob.type.toLowerCase().includes('application/pdf') || await blob.slice(0, 5).text() !== '%PDF-') throw new Error('The server did not return a valid PDF report.');
+  } else {
+    if (!blob.type.toLowerCase().includes('application/json')) throw new Error('The server did not return a JSON report.');
+    try { JSON.parse(await blob.text()); } catch { throw new Error('The server returned an unreadable JSON report.'); }
+  }
   if (!isAndroidApp) {
     const url = URL.createObjectURL(blob);
     const anchor = document.createElement('a');
@@ -48,7 +63,11 @@ export async function saveReport(blob: Blob, filename: string) {
     reader.readAsDataURL(blob);
   });
   const file = await Filesystem.writeFile({ path: `reports/${filename}`, data, directory: Directory.Cache, recursive: true });
-  await Share.share({ title: 'CV Analyser report', url: file.uri, dialogTitle: 'Save or share your report' });
+  try { await Share.share({ title: 'CV Analyser report', url: file.uri, dialogTitle: 'Save or share your report' }); }
+  catch (error) {
+    if (error instanceof Error && error.message === 'Share canceled') return 'Sharing cancelled. The report remains in private app cache.';
+    throw error;
+  }
   // Keep the cache file available while the selected Android app reads its URI.
   // Android may reclaim cache files; these are user-requested exports, not resume history.
   return 'Report ready. Use Android sharing to save it to your chosen app or folder.';

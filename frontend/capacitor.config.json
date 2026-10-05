@@ -2,6 +2,7 @@
   "appId": "com.cvanalyser.app",
   "appName": "CV Analyser",
   "webDir": "dist",
+  "loggingBehavior": "none",
   "plugins": {
     "CapacitorHttp": { "enabled": true }
   }

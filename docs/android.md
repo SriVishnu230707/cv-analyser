@@ -7,13 +7,15 @@ The Android APK bundles the React interface using Capacitor 8. It supports Andro
 1. Transfer `output/android/cv-analyser-debug.apk` to your Android phone.
 2. Open the file and allow installation from the app you used to open it if Android asks.
 3. Open **CV Analyser** from your launcher.
-4. In **Android server settings**, enter the analysis server address, test the connection and save. Saving restarts your current review.
+4. In **Android server settings**, enter the analysis server address and server access token, test the connection and save. Saving restarts your current review. The token is kept in session storage; enter it again when starting a fresh app session.
 
 The APK is debug-signed for local demonstrations. A Play Store release requires your own signing key and a hosted HTTPS backend. Release builds do not enable cleartext HTTP.
 
 ## Same-Wi-Fi demonstration
 
 Start the backend from the repository root:
+
+Set `CV_API_TOKEN` in the ignored root `.env` file to a random token of at least 32 characters. Generate one with `python -c "import secrets; print(secrets.token_urlsafe(32))"`. Copy that token into the app's server settings. This is a separate access token; never use your OpenAI API key for it. A token has been generated locally during the security review. The web interface also has server access settings when connecting to a protected backend.
 
 ```powershell
 .\.venv\Scripts\python.exe scripts/run_backend.py --host 0.0.0.0 --port 8001
@@ -47,7 +49,7 @@ Re-run synchronization after changing frontend code. Build in Android Studio or 
 
 ## File handling
 
-The Android system file picker selects PDF/DOCX resumes; no broad storage permission is requested. Reports are written to app cache only on explicit export and shared with Android's file provider. Save the report using a chosen share destination; Android can reclaim cache files. The saved server address is stored on the device. Resume review state stays in memory and resets on restart. Application backup is disabled. Optional OpenAI requests still require explicit consent.
+The Android system file picker selects PDF/DOCX resumes; no broad storage permission is requested. Reports are written to app cache only on explicit export and shared with Android's file provider. Save the report using a chosen share destination; Android can reclaim cache files. Use **Clear cached reports** in server settings after sharing has finished to remove private export copies. The saved server address is stored on the device. Resume review state stays in memory and resets on restart. Application backup is disabled. Optional OpenAI requests still require explicit consent.
 
 ## Recorded verification
 

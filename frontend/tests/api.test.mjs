@@ -4,9 +4,20 @@ import { readFile } from 'node:fs/promises';
 import ts from 'typescript';
 
 // Compile only this small module in memory; no extra test dependencies are needed.
-const source = await readFile(new URL('../src/api.ts', import.meta.url), 'utf8');
+const source = (await readFile(new URL('../src/api.ts', import.meta.url), 'utf8')).replace("import { Capacitor, CapacitorHttp } from '@capacitor/core';", 'const Capacitor={isNativePlatform:()=>false}; const CapacitorHttp={};');
 const compiled = ts.transpileModule(source, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext } }).outputText;
-const { checkedFetch, requestMessage, normalizeServerUrl, configureApiServer } = await import('data:text/javascript;base64,' + Buffer.from(compiled).toString('base64'));
+const { checkedFetch, requestMessage, normalizeServerUrl, configureApiServer, apiHeaders, apiUrl } = await import('data:text/javascript;base64,' + Buffer.from(compiled).toString('base64'));
+
+test('session access token is attached only to application API paths',()=>{
+  globalThis.sessionStorage={getItem:()=> 'test-token'};
+  try {
+    assert.equal(apiHeaders('/api/compare').get('authorization'),'Bearer test-token');
+    assert.equal(apiHeaders('/api/demo/job', {Authorization:'Bearer new-token'}).get('authorization'),'Bearer new-token');
+    assert.equal(apiHeaders('https://other.example').get('authorization'),null);
+    assert.equal(apiHeaders('//other.example').get('authorization'),null);
+    assert.throws(()=>apiUrl('//other.example'),/relative API path/);
+  } finally { delete globalThis.sessionStorage; }
+});
 
 test('Android rejects invalid server origins before any resume is sent', () => {
   for (const value of ['file:///tmp', 'javascript:alert(1)', 'https://user:secret@example.com', 'https://example.com/api', 'https://example.com?token=x', 'https://example.com#secret']) assert.throws(() => normalizeServerUrl(value));

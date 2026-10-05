@@ -4,7 +4,7 @@ import { readFile } from 'node:fs/promises';
 import ts from 'typescript';
 
 async function moduleUrl(filename) {
-  const source = await readFile(new URL(filename, import.meta.url), 'utf8');
+  const source = (await readFile(new URL(filename, import.meta.url), 'utf8')).replace("import { Capacitor, CapacitorHttp } from '@capacitor/core';", 'const Capacitor={isNativePlatform:()=>false}; const CapacitorHttp={};');
   return 'data:text/javascript;base64,' + Buffer.from(ts.transpileModule(source, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext } }).outputText).toString('base64');
 }
 const apiUrl = await moduleUrl('../src/api.ts');
