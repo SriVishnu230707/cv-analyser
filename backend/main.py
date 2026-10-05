@@ -16,10 +16,12 @@ from backend.services.skill_extractor import CATALOG
 from backend.services.report_export import pdf_report
 from backend.services.ai_enrichment import configuration, enrich, AIError
 import json
+from backend.security import SecurityMiddleware
 
 ROOT = Path(__file__).resolve().parents[1]
 MAX_FILE_BYTES = 5 * 1024 * 1024
-app = FastAPI(title="CV Analyser", version="0.10.0", description="Extract resumes and compare reviewed evidence with job requirements.")
+app = FastAPI(title="CV Analyser", version="0.11.1", description="Extract resumes and compare reviewed evidence with job requirements.")
+app.add_middleware(SecurityMiddleware)
 
 
 def error(code: str, message: str, field: str, status: int = 422):
